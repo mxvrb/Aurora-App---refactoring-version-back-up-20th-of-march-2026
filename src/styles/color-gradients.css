@@ -1,0 +1,413 @@
+/* ===============================================
+   COLOR-SPECIFIC BUTTON GRADIENTS FOR MENU ITEMS
+   =============================================== */
+
+/* Purple gradient for Edit Template */
+.menu-button-gradient-purple {
+  position: relative;
+  background: linear-gradient(to right, #a855f7, #9333ea);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  color: #ffffff;
+  box-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(168, 85, 247, 0.1) inset;
+}
+
+.menu-button-gradient-purple:hover {
+  background: linear-gradient(to right, #c084fc, #a855f7);
+  box-shadow: 
+    0 4px 12px rgba(168, 85, 247, 0.25),
+    0 0 0 1px rgba(168, 85, 247, 0.2) inset;
+  transform: translateY(-1px);
+}
+
+.menu-button-gradient-purple *,
+.dark .menu-button-gradient-purple * {
+  color: #ffffff !important;
+}
+
+.dark .menu-button-gradient-purple {
+  background: linear-gradient(to right, #a855f7, #9333ea);
+  box-shadow: 
+    0 2px 8px rgba(168, 85, 247, 0.3),
+    0 0 0 1px rgba(168, 85, 247, 0.15) inset,
+    0 0 20px rgba(168, 85, 247, 0.1);
+}
+
+.dark .menu-button-gradient-purple:hover {
+  background: linear-gradient(to right, #c084fc, #a855f7);
+  box-shadow: 
+    0 4px 16px rgba(168, 85, 247, 0.4),
+    0 0 0 1px rgba(168, 85, 247, 0.25) inset,
+    0 0 30px rgba(168, 85, 247, 0.2);
+  transform: translateY(-1px);
+}
+
+/* Green gradient for Edit Staff - Darker for better contrast */
+.menu-button-gradient-green {
+  position: relative;
+  background: linear-gradient(to right, #16a34a, #15803d);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  color: #ffffff;
+  box-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(22, 163, 74, 0.1) inset;
+}
+
+.menu-button-gradient-green:hover {
+  background: linear-gradient(to right, #22c55e, #16a34a);
+  box-shadow: 
+    0 4px 12px rgba(22, 163, 74, 0.25),
+    0 0 0 1px rgba(22, 163, 74, 0.2) inset;
+  transform: translateY(-1px);
+}
+
+.menu-button-gradient-green *,
+.dark .menu-button-gradient-green * {
+  color: #ffffff !important;
+}
+
+.dark .menu-button-gradient-green {
+  background: linear-gradient(to right, #16a34a, #15803d);
+  box-shadow: 
+    0 2px 8px rgba(22, 163, 74, 0.3),
+    0 0 0 1px rgba(22, 163, 74, 0.15) inset,
+    0 0 20px rgba(22, 163, 74, 0.1);
+}
+
+.dark .menu-button-gradient-green:hover {
+  background: linear-gradient(to right, #22c55e, #16a34a);
+  box-shadow: 
+    0 4px 16px rgba(22, 163, 74, 0.4),
+    0 0 0 1px rgba(22, 163, 74, 0.25) inset,
+    0 0 30px rgba(22, 163, 74, 0.2);
+  transform: translateY(-1px);
+}
+
+/* Orange gradient for Select Languages - Darker for better contrast */
+.menu-button-gradient-orange {
+  position: relative;
+  background: linear-gradient(to right, #ea580c, #c2410c);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  color: #ffffff;
+  box-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(234, 88, 12, 0.1) inset;
+}
+
+.menu-button-gradient-orange:hover {
+  background: linear-gradient(to right, #f97316, #ea580c);
+  box-shadow: 
+    0 4px 12px rgba(234, 88, 12, 0.25),
+    0 0 0 1px rgba(234, 88, 12, 0.2) inset;
+  transform: translateY(-1px);
+}
+
+.menu-button-gradient-orange *,
+.dark .menu-button-gradient-orange * {
+  color: #ffffff !important;
+}
+
+.dark .menu-button-gradient-orange {
+  background: linear-gradient(to right, #ea580c, #c2410c);
+  box-shadow: 
+    0 2px 8px rgba(234, 88, 12, 0.3),
+    0 0 0 1px rgba(234, 88, 12, 0.15) inset,
+    0 0 20px rgba(234, 88, 12, 0.1);
+}
+
+.dark .menu-button-gradient-orange:hover {
+  background: linear-gradient(to right, #f97316, #ea580c);
+  box-shadow: 
+    0 4px 16px rgba(234, 88, 12, 0.4),
+    0 0 0 1px rgba(234, 88, 12, 0.25) inset,
+    0 0 30px rgba(234, 88, 12, 0.2);
+  transform: translateY(-1px);
+}
+
+/* Yellow gradient for Set Reminders - Darker for better contrast */
+.menu-button-gradient-yellow {
+  position: relative;
+  background: linear-gradient(to right, #ca8a04, #a16207);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  color: #ffffff;
+  box-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(202, 138, 4, 0.1) inset;
+}
+
+.menu-button-gradient-yellow:hover {
+  background: linear-gradient(to right, #eab308, #ca8a04);
+  box-shadow: 
+    0 4px 12px rgba(202, 138, 4, 0.25),
+    0 0 0 1px rgba(202, 138, 4, 0.2) inset;
+  transform: translateY(-1px);
+}
+
+.menu-button-gradient-yellow *,
+.dark .menu-button-gradient-yellow * {
+  color: #ffffff !important;
+}
+
+.dark .menu-button-gradient-yellow {
+  background: linear-gradient(to right, #ca8a04, #a16207);
+  box-shadow: 
+    0 2px 8px rgba(202, 138, 4, 0.3),
+    0 0 0 1px rgba(202, 138, 4, 0.15) inset,
+    0 0 20px rgba(202, 138, 4, 0.1);
+}
+
+.dark .menu-button-gradient-yellow:hover {
+  background: linear-gradient(to right, #eab308, #ca8a04);
+  box-shadow: 
+    0 4px 16px rgba(202, 138, 4, 0.4),
+    0 0 0 1px rgba(202, 138, 4, 0.25) inset,
+    0 0 30px rgba(202, 138, 4, 0.2);
+  transform: translateY(-1px);
+}
+
+/* Indigo gradient for Booking Directory - Darker for better contrast */
+.menu-button-gradient-indigo {
+  position: relative;
+  background: linear-gradient(to right, #4f46e5, #4338ca);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  color: #ffffff;
+  box-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(79, 70, 229, 0.1) inset;
+}
+
+.menu-button-gradient-indigo:hover {
+  background: linear-gradient(to right, #6366f1, #4f46e5);
+  box-shadow: 
+    0 4px 12px rgba(79, 70, 229, 0.25),
+    0 0 0 1px rgba(79, 70, 229, 0.2) inset;
+  transform: translateY(-1px);
+}
+
+.menu-button-gradient-indigo *,
+.dark .menu-button-gradient-indigo * {
+  color: #ffffff !important;
+}
+
+.dark .menu-button-gradient-indigo {
+  background: linear-gradient(to right, #4f46e5, #4338ca);
+  box-shadow: 
+    0 2px 8px rgba(79, 70, 229, 0.3),
+    0 0 0 1px rgba(79, 70, 229, 0.15) inset,
+    0 0 20px rgba(79, 70, 229, 0.1);
+}
+
+.dark .menu-button-gradient-indigo:hover {
+  background: linear-gradient(to right, #6366f1, #4f46e5);
+  box-shadow: 
+    0 4px 16px rgba(79, 70, 229, 0.4),
+    0 0 0 1px rgba(79, 70, 229, 0.25) inset,
+    0 0 30px rgba(79, 70, 229, 0.2);
+  transform: translateY(-1px);
+}
+
+/* Pink gradient for Calendar Setup - Darker for better contrast */
+.menu-button-gradient-pink {
+  position: relative;
+  background: linear-gradient(to right, #db2777, #be185d);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  color: #ffffff;
+  box-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(219, 39, 119, 0.1) inset;
+}
+
+.menu-button-gradient-pink:hover {
+  background: linear-gradient(to right, #ec4899, #db2777);
+  box-shadow: 
+    0 4px 12px rgba(219, 39, 119, 0.25),
+    0 0 0 1px rgba(219, 39, 119, 0.2) inset;
+  transform: translateY(-1px);
+}
+
+.menu-button-gradient-pink *,
+.dark .menu-button-gradient-pink * {
+  color: #ffffff !important;
+}
+
+.dark .menu-button-gradient-pink {
+  background: linear-gradient(to right, #db2777, #be185d);
+  box-shadow: 
+    0 2px 8px rgba(219, 39, 119, 0.3),
+    0 0 0 1px rgba(219, 39, 119, 0.15) inset,
+    0 0 20px rgba(219, 39, 119, 0.1);
+}
+
+.dark .menu-button-gradient-pink:hover {
+  background: linear-gradient(to right, #ec4899, #db2777);
+  box-shadow: 
+    0 4px 16px rgba(219, 39, 119, 0.4),
+    0 0 0 1px rgba(219, 39, 119, 0.25) inset,
+    0 0 30px rgba(219, 39, 119, 0.2);
+  transform: translateY(-1px);
+}
+
+/* Amber gradient for Set Reviews - Darker for better contrast */
+.menu-button-gradient-amber {
+  position: relative;
+  background: linear-gradient(to right, #d97706, #b45309);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  color: #ffffff;
+  box-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(217, 119, 6, 0.1) inset;
+}
+
+.menu-button-gradient-amber:hover {
+  background: linear-gradient(to right, #f59e0b, #d97706);
+  box-shadow: 
+    0 4px 12px rgba(217, 119, 6, 0.25),
+    0 0 0 1px rgba(217, 119, 6, 0.2) inset;
+  transform: translateY(-1px);
+}
+
+.menu-button-gradient-amber *,
+.dark .menu-button-gradient-amber * {
+  color: #ffffff !important;
+}
+
+.dark .menu-button-gradient-amber {
+  background: linear-gradient(to right, #d97706, #b45309);
+  box-shadow: 
+    0 2px 8px rgba(217, 119, 6, 0.3),
+    0 0 0 1px rgba(217, 119, 6, 0.15) inset,
+    0 0 20px rgba(217, 119, 6, 0.1);
+}
+
+.dark .menu-button-gradient-amber:hover {
+  background: linear-gradient(to right, #f59e0b, #d97706);
+  box-shadow: 
+    0 4px 16px rgba(217, 119, 6, 0.4),
+    0 0 0 1px rgba(217, 119, 6, 0.25) inset,
+    0 0 30px rgba(217, 119, 6, 0.2);
+  transform: translateY(-1px);
+}
+
+/* Teal gradient for Follow-ups - Darker for better contrast */
+.menu-button-gradient-teal {
+  position: relative;
+  background: linear-gradient(to right, #0d9488, #0f766e);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  color: #ffffff;
+  box-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(13, 148, 136, 0.1) inset;
+}
+
+.menu-button-gradient-teal:hover {
+  background: linear-gradient(to right, #14b8a6, #0d9488);
+  box-shadow: 
+    0 4px 12px rgba(13, 148, 136, 0.25),
+    0 0 0 1px rgba(13, 148, 136, 0.2) inset;
+  transform: translateY(-1px);
+}
+
+.menu-button-gradient-teal *,
+.dark .menu-button-gradient-teal * {
+  color: #ffffff !important;
+}
+
+.dark .menu-button-gradient-teal {
+  background: linear-gradient(to right, #0d9488, #0f766e);
+  box-shadow: 
+    0 2px 8px rgba(13, 148, 136, 0.3),
+    0 0 0 1px rgba(13, 148, 136, 0.15) inset,
+    0 0 20px rgba(13, 148, 136, 0.1);
+}
+
+.dark .menu-button-gradient-teal:hover {
+  background: linear-gradient(to right, #14b8a6, #0d9488);
+  box-shadow: 
+    0 4px 16px rgba(13, 148, 136, 0.4),
+    0 0 0 1px rgba(13, 148, 136, 0.25) inset,
+    0 0 30px rgba(13, 148, 136, 0.2);
+  transform: translateY(-1px);
+}
+
+/* Emerald gradient for Payments - Darker for better contrast */
+.menu-button-gradient-emerald {
+  position: relative;
+  background: linear-gradient(to right, #059669, #047857);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  color: #ffffff;
+  box-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(5, 150, 105, 0.1) inset;
+}
+
+.menu-button-gradient-emerald:hover {
+  background: linear-gradient(to right, #10b981, #059669);
+  box-shadow: 
+    0 4px 12px rgba(5, 150, 105, 0.25),
+    0 0 0 1px rgba(5, 150, 105, 0.2) inset;
+  transform: translateY(-1px);
+}
+
+.menu-button-gradient-emerald *,
+.dark .menu-button-gradient-emerald * {
+  color: #ffffff !important;
+}
+
+.dark .menu-button-gradient-emerald {
+  background: linear-gradient(to right, #059669, #047857);
+  box-shadow: 
+    0 2px 8px rgba(5, 150, 105, 0.3),
+    0 0 0 1px rgba(5, 150, 105, 0.15) inset,
+    0 0 20px rgba(5, 150, 105, 0.1);
+}
+
+.dark .menu-button-gradient-emerald:hover {
+  background: linear-gradient(to right, #10b981, #059669);
+  box-shadow: 
+    0 4px 16px rgba(5, 150, 105, 0.4),
+    0 0 0 1px rgba(5, 150, 105, 0.25) inset,
+    0 0 30px rgba(5, 150, 105, 0.2);
+  transform: translateY(-1px);
+}
+
+/* Royal Blue gradient for White Label - Distinct from Main Options */
+.menu-button-gradient-royal {
+  position: relative;
+  background: linear-gradient(to right, #1e40af, #1e3a8a);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  color: #ffffff;
+  box-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(30, 64, 175, 0.1) inset;
+}
+
+.menu-button-gradient-royal:hover {
+  background: linear-gradient(to right, #2563eb, #1e40af);
+  box-shadow: 
+    0 4px 12px rgba(30, 64, 175, 0.25),
+    0 0 0 1px rgba(30, 64, 175, 0.2) inset;
+  transform: translateY(-1px);
+}
+
+.menu-button-gradient-royal *,
+.dark .menu-button-gradient-royal * {
+  color: #ffffff !important;
+}
+
+.dark .menu-button-gradient-royal {
+  background: linear-gradient(to right, #1e40af, #1e3a8a);
+  box-shadow: 
+    0 2px 8px rgba(30, 64, 175, 0.3),
+    0 0 0 1px rgba(30, 64, 175, 0.15) inset,
+    0 0 20px rgba(30, 64, 175, 0.1);
+}
+
+.dark .menu-button-gradient-royal:hover {
+  background: linear-gradient(to right, #2563eb, #1e40af);
+  box-shadow: 
+    0 4px 16px rgba(30, 64, 175, 0.4),
+    0 0 0 1px rgba(30, 64, 175, 0.25) inset,
+    0 0 30px rgba(30, 64, 175, 0.2);
+  transform: translateY(-1px);
+}

@@ -1,0 +1,1528 @@
+@custom-variant dark (&:is(.dark *));
+@import './color-gradients.css';
+
+:root {
+  --font-size: 14px;
+  --background: #ffffff;
+  --foreground: oklch(0.145 0 0);
+  --card: #ffffff;
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: #030213;
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.95 0.0058 264.53);
+  --secondary-foreground: #030213;
+  --muted: #ececf0;
+  --muted-foreground: #717182;
+  --accent: #e9ebef;
+  --accent-foreground: #030213;
+  --destructive: #d4183d;
+  --destructive-foreground: #ffffff;
+  --border: rgba(0, 0, 0, 0.1);
+  --input: transparent;
+  --input-background: #f3f3f5;
+  --switch-background: #cbced4;
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: #030213;
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.145 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.145 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.985 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.396 0.141 25.723);
+  --destructive-foreground: oklch(0.637 0.237 25.331);
+  --border: oklch(0.269 0 0);
+  --input: oklch(0.269 0 0);
+  --ring: oklch(0.439 0 0);
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(0.269 0 0);
+  --sidebar-ring: oklch(0.439 0 0);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-background: var(--input-background);
+  --color-switch-background: var(--switch-background);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    transition: background-color 0.5s ease, color 0.5s ease;
+  }
+
+  /* Smooth background transitions for all major container elements */
+  html {
+    transition: background-color 0.5s ease;
+  }
+
+  /* Ensure cards and containers also transition smoothly */
+  div[class*="bg-gray"],
+  div[class*="bg-white"],
+  div[class*="dark:bg-gray"],
+  div[class*="dark:bg-white"] {
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+  }
+}
+
+/* Dynamic color scheme gradient for app main backgrounds */
+:root {
+  --cs-r: 59;
+  --cs-g: 130;
+  --cs-b: 246;
+}
+
+.custom-color-scheme .min-h-screen {
+  background: linear-gradient(135deg,
+      rgba(var(--cs-r), var(--cs-g), var(--cs-b), 0.10) 0%,
+      rgba(var(--cs-r), var(--cs-g), var(--cs-b), 0.05) 40%,
+      rgb(243, 244, 246) 100%) !important;
+  transition: background 300ms ease-in-out !important;
+}
+
+.dark.custom-color-scheme .min-h-screen,
+.custom-color-scheme.dark .min-h-screen {
+  background: linear-gradient(135deg,
+      rgba(var(--cs-r), var(--cs-g), var(--cs-b), 0.08) 0%,
+      rgba(var(--cs-r), var(--cs-g), var(--cs-b), 0.04) 40%,
+      rgb(3, 7, 18) 100%) !important;
+}
+
+/* Smooth transition even when removing custom scheme */
+.min-h-screen {
+  transition: background 300ms ease-in-out;
+}
+
+/**
+ * Base typography. This is not applied to elements which have an ancestor with a Tailwind text class.
+ */
+@layer base {
+  :where(:not(:has([class*=" text-"]), :not(:has([class^="text-"])))) {
+    h1 {
+      font-size: var(--text-2xl);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    h2 {
+      font-size: var(--text-xl);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    h3 {
+      font-size: var(--text-lg);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    h4 {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    p {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.5;
+    }
+
+    label {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    button {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    input {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.5;
+    }
+  }
+}
+
+/* Aurora wave animations - CSS based with fixed duration, controlled by Web Animations API */
+@keyframes auroraWave1 {
+  0% {
+    d: path('M 0 100 Q 250 70, 500 100 T 1000 100 T 1500 100 T 2000 100 L 2000 0 L 0 0 Z');
+  }
+
+  50% {
+    d: path('M 0 85 Q 250 115, 500 85 T 1000 85 T 1500 85 T 2000 85 L 2000 0 L 0 0 Z');
+  }
+
+  100% {
+    d: path('M 0 100 Q 250 70, 500 100 T 1000 100 T 1500 100 T 2000 100 L 2000 0 L 0 0 Z');
+  }
+}
+
+@keyframes auroraWave2 {
+  0% {
+    d: path('M 0 130 Q 300 95, 600 130 T 1200 130 T 1800 130 T 2000 130 L 2000 0 L 0 0 Z');
+  }
+
+  50% {
+    d: path('M 0 115 Q 300 145, 600 115 T 1200 115 T 1800 115 T 2000 115 L 2000 0 L 0 0 Z');
+  }
+
+  100% {
+    d: path('M 0 130 Q 300 95, 600 130 T 1200 130 T 1800 130 T 2000 130 L 2000 0 L 0 0 Z');
+  }
+}
+
+.aurora-wave-1 {
+  animation: auroraWave1 60s ease-in-out infinite;
+}
+
+.aurora-wave-2 {
+  animation: auroraWave2 70s ease-in-out infinite;
+}
+
+html {
+  font-size: var(--font-size);
+}
+
+/* Custom tooltip arrow styling - comprehensive approach */
+.tooltip-custom-arrow+div svg,
+.tooltip-custom-arrow~div svg,
+[data-radix-tooltip-content]+[data-radix-tooltip-arrow] svg,
+[data-radix-tooltip-arrow] svg,
+[data-radix-popper-content-wrapper] svg,
+[role="tooltip"]+[data-radix-tooltip-arrow] svg {
+  fill: #FFFFFF !important;
+  stroke: #E5E7EB !important;
+  stroke-width: 1px !important;
+  filter: none !important;
+  box-shadow: none !important;
+}
+
+[data-radix-tooltip-arrow] svg path,
+[data-radix-tooltip-arrow] svg polygon,
+[data-radix-popper-content-wrapper] svg path,
+[data-radix-popper-content-wrapper] svg polygon,
+.tooltip-custom-arrow+div svg path,
+.tooltip-custom-arrow+div svg polygon {
+  fill: #FFFFFF !important;
+  stroke: #E5E7EB !important;
+  stroke-width: 1px !important;
+}
+
+/* Remove any shadow from tooltip arrows */
+[data-radix-tooltip-arrow],
+[data-radix-tooltip-arrow]>*,
+.tooltip-custom-arrow+div {
+  filter: none !important;
+  box-shadow: none !important;
+  drop-shadow: none !important;
+}
+
+/* Custom speech bubble tooltip */
+.speech-bubble::before {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 20px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid #E5E7EB;
+  z-index: 1;
+}
+
+.speech-bubble::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 20px;
+  width: 0;
+  height: 0;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-top: 7px solid white;
+  z-index: 2;
+  margin-top: -1px;
+}
+
+/* Show tooltip only on Info icon hover */
+.info-icon:hover+.speech-bubble {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Custom browser validation message styling - Blue theme to match login button */
+:root {
+  --validation-bg: #2563eb;
+  --validation-border: #1d4ed8;
+  --validation-text: #ffffff;
+}
+
+/* Hide default browser validation styling */
+input:invalid {
+  box-shadow: none !important;
+}
+
+/* Comprehensive validation message targeting for all browsers */
+/* Chrome/Safari validation tooltips */
+::-webkit-validation-bubble {
+  background: var(--validation-bg) !important;
+  background-color: var(--validation-bg) !important;
+  border: 1px solid var(--validation-border) !important;
+  border-radius: 8px !important;
+  color: var(--validation-text) !important;
+  font-size: 14px !important;
+  padding: 8px 12px !important;
+  box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.1) !important;
+}
+
+::-webkit-validation-bubble-message {
+  background: var(--validation-bg) !important;
+  background-color: var(--validation-bg) !important;
+  border: none !important;
+  color: var(--validation-text) !important;
+  font-size: 14px !important;
+  padding: 0 !important;
+}
+
+::-webkit-validation-bubble-arrow {
+  background: var(--validation-bg) !important;
+  background-color: var(--validation-bg) !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+::-webkit-validation-bubble-arrow-clipper {
+  border: none !important;
+}
+
+/* Direct targeting of validation elements in DOM */
+div[role="alert"],
+div[role="tooltip"] {
+  background: var(--validation-bg) !important;
+  background-color: var(--validation-bg) !important;
+  color: var(--validation-text) !important;
+  border: 1px solid var(--validation-border) !important;
+  border-radius: 8px !important;
+  padding: 8px 12px !important;
+  font-size: 14px !important;
+}
+
+/* Target browser validation messages by content patterns */
+div:has(+ input:invalid),
+div[class*="error"]:not([class*="field"]):not([class*="form"]),
+div[id*="error"]:not([id*="field"]):not([id*="form"]),
+span[role="alert"],
+span[aria-live="assertive"] {
+  background: var(--validation-bg) !important;
+  background-color: var(--validation-bg) !important;
+  color: var(--validation-text) !important;
+  border: 1px solid var(--validation-border) !important;
+  border-radius: 8px !important;
+  padding: 8px 12px !important;
+  font-size: 14px !important;
+}
+
+/* Target validation messages by their typical orange background */
+div[style*="background-color: rgb(255, 201, 102)"],
+div[style*="background: rgb(255, 201, 102)"],
+div[style*="background-color: orange"],
+div[style*="background: orange"],
+div[style*="background-color: #ffbb33"],
+div[style*="background: #ffbb33"],
+span[style*="background-color: rgb(255, 201, 102)"],
+span[style*="background: rgb(255, 201, 102)"],
+span[style*="background-color: orange"],
+span[style*="background: orange"] {
+  background: var(--validation-bg) !important;
+  background-color: var(--validation-bg) !important;
+  color: var(--validation-text) !important;
+  border: 1px solid var(--validation-border) !important;
+  border-radius: 8px !important;
+  padding: 8px 12px !important;
+  font-size: 14px !important;
+}
+
+/* Modern browser validation using popover API */
+[popover]:popover-open {
+  background: var(--validation-bg) !important;
+  background-color: var(--validation-bg) !important;
+  color: var(--validation-text) !important;
+  border: 1px solid var(--validation-border) !important;
+  border-radius: 8px !important;
+  padding: 8px 12px !important;
+  font-size: 14px !important;
+}
+
+/* Firefox validation styling */
+input:invalid:focus {
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2) !important;
+  border-color: var(--validation-border) !important;
+}
+
+/* Template Edit Modal - Higher z-index to appear above Live Conversations modal */
+.template-edit-modal-overlay {
+  z-index: 99998 !important;
+}
+
+.template-edit-modal-content {
+  z-index: 99999 !important;
+}
+
+/* Edge/IE specific validation messages */
+input::-ms-clear {
+  display: none;
+}
+
+/* Target all validation-related elements globally */
+*[class*="validation"]:not([class*="field"]):not([class*="form"]),
+*[id*="validation"]:not([id*="field"]):not([id*="form"]),
+*[data-validation],
+*[aria-describedby*="error"],
+*[role="tooltip"][data-invalid] {
+  background: var(--validation-bg) !important;
+  background-color: var(--validation-bg) !important;
+  color: var(--validation-text) !important;
+  border: 1px solid var(--validation-border) !important;
+  border-radius: 8px !important;
+  padding: 8px 12px !important;
+  font-size: 14px !important;
+}
+
+/* Style the exclamation mark icon to have blue background */
+*[class*="validation"]::before,
+*[id*="validation"]::before,
+*[data-validation]::before,
+div[style*="background-color: rgb(255, 201, 102)"]::before,
+div[style*="background: rgb(255, 201, 102)"]::before,
+div[style*="background-color: orange"]::before,
+div[style*="background: orange"]::before,
+span[style*="background-color: rgb(255, 201, 102)"]::before,
+span[style*="background: rgb(255, 201, 102)"]::before {
+  content: "!" !important;
+  display: inline-block !important;
+  width: 16px !important;
+  height: 16px !important;
+  background: var(--validation-bg) !important;
+  background-color: var(--validation-bg) !important;
+  color: var(--validation-text) !important;
+  border-radius: 50% !important;
+  text-align: center !important;
+  line-height: 16px !important;
+  font-size: 12px !important;
+  font-weight: bold !important;
+  margin-right: 8px !important;
+  vertical-align: middle !important;
+}
+
+/* Catch-all for any validation message containers */
+body>div:not([id]):not([class]):has(+ input:invalid),
+body>span:not([id]):not([class]):has(+ input:invalid) {
+  background: var(--validation-bg) !important;
+  background-color: var(--validation-bg) !important;
+  color: var(--validation-text) !important;
+  border: 1px solid var(--validation-border) !important;
+  border-radius: 8px !important;
+  padding: 8px 12px !important;
+  font-size: 14px !important;
+}
+
+/* Custom validation styling for manual implementation */
+.validation-error {
+  background: var(--validation-bg) !important;
+  background-color: var(--validation-bg) !important;
+  color: var(--validation-text) !important;
+  border: 1px solid var(--validation-border) !important;
+  border-radius: 8px !important;
+  padding: 8px 12px !important;
+  font-size: 14px !important;
+  position: relative !important;
+}
+
+.validation-error::before {
+  content: "!" !important;
+  display: inline-block !important;
+  width: 16px !important;
+  height: 16px !important;
+  background: var(--validation-bg) !important;
+  background-color: var(--validation-bg) !important;
+  color: var(--validation-text) !important;
+  border-radius: 50% !important;
+  text-align: center !important;
+  line-height: 16px !important;
+  font-size: 12px !important;
+  font-weight: bold !important;
+  margin-right: 8px !important;
+}
+
+/* Global scrollbar styling - Light mode default */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f9fafb;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* Dark mode global scrollbar styling */
+.dark ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: #374151;
+  border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #4b5563;
+  border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
+}
+
+/* Light mode scrollbar styling (class-based for specific elements) */
+.scrollbar-light::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scrollbar-light::-webkit-scrollbar-track {
+  background: #f9fafb;
+  border-radius: 4px;
+}
+
+.scrollbar-light::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 4px;
+}
+
+.scrollbar-light::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* Dark mode scrollbar styling (class-based for specific elements) */
+.scrollbar-dark::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scrollbar-dark::-webkit-scrollbar-track {
+  background: #374151;
+  border-radius: 4px;
+}
+
+.scrollbar-dark::-webkit-scrollbar-thumb {
+  background: #4b5563;
+  border-radius: 4px;
+}
+
+.scrollbar-dark::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
+}
+
+/* Refresh button spin animation */
+@keyframes refreshSpin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-refresh-spin {
+  animation: refreshSpin 1s linear infinite;
+}
+
+/* Counter-clockwise spin animation for refresh button */
+@keyframes spinCounterClockwise {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  25% {
+    transform: rotate(-90deg);
+  }
+
+  50% {
+    transform: rotate(-180deg);
+  }
+
+  75% {
+    transform: rotate(-270deg);
+  }
+
+  100% {
+    transform: rotate(-360deg);
+  }
+}
+
+.animate-spin-ccw {
+  animation: spinCounterClockwise 1s linear infinite;
+}
+
+/* 3D Floating dots animation */
+@keyframes float3D {
+
+  0%,
+  100% {
+    transform: translateY(0px) scale(1);
+  }
+
+  25% {
+    transform: translateY(-2px) scale(1.05);
+  }
+
+  50% {
+    transform: translateY(-1px) scale(1.02);
+  }
+
+  75% {
+    transform: translateY(-3px) scale(1.08);
+  }
+}
+
+.animate-float-3d {
+  animation: float3D 0.25s ease-in-out infinite;
+}
+
+/* Eye blink animation removed - now using frame-by-frame AnimatedEyeIcon component */
+
+/* Global image protection - Bulletproof approach to prevent dragging and saving of ALL images */
+img {
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  -webkit-user-drag: none !important;
+  -webkit-touch-callout: none !important;
+  -khtml-user-select: none !important;
+  -moz-user-drag: none !important;
+  touch-action: none !important;
+  pointer-events: auto !important;
+  /* Force prevent dragging */
+  -webkit-user-drag: none !important;
+  -khtml-user-drag: none !important;
+  -moz-user-drag: none !important;
+  -o-user-drag: none !important;
+  user-drag: none !important;
+  /* Additional protection */
+  -webkit-touch-callout: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+/* Force draggable=false attribute on all images */
+img[draggable="true"] {
+  -webkit-user-drag: none !important;
+  -moz-user-drag: none !important;
+  user-drag: none !important;
+}
+
+/* Prevent context menu on all images */
+img::selection {
+  background: transparent !important;
+}
+
+img::-moz-selection {
+  background: transparent !important;
+}
+
+/* Sync indicator smooth fade animations */
+.sync-indicator-fade {
+  transition: opacity 1000ms ease-out, transform 300ms ease-out;
+}
+
+.sync-indicator-fade.fade-out {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+/* Toast notification improvements - ensure all notifications fade smoothly */
+[data-sonner-toaster] {
+  z-index: 999999 !important;
+  position: fixed !important;
+}
+
+/* Ensure Select dropdowns render above Dialogs */
+[data-radix-popper-content-wrapper] {
+  z-index: 10000000 !important;
+}
+
+.toaster [data-sonner-toast] {
+  transition: opacity 500ms ease-out, transform 500ms ease-out !important;
+}
+
+.toaster [data-sonner-toast][data-dismissed="true"] {
+  opacity: 0 !important;
+  transform: translateY(-100%) scale(0.95) !important;
+}
+
+/* Fast green status indicator pulse animation */
+@keyframes fastGreenPulse {
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 8px rgba(34, 197, 94, 0.8), 0 0 16px rgba(34, 197, 94, 0.4);
+  }
+
+  50% {
+    opacity: 0.3;
+    transform: scale(0.85);
+    box-shadow: 0 0 12px rgba(34, 197, 94, 1), 0 0 24px rgba(34, 197, 94, 0.6);
+  }
+}
+
+.animate-fast-green-pulse {
+  animation: fastGreenPulse 1.2s ease-in-out infinite;
+}
+
+/* Enhanced mist effect animation for AI chat refresh - Professional Figma Make style */
+@keyframes mistAppear {
+  0% {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+    transform: scale(1.02);
+  }
+
+  30% {
+    opacity: 0.4;
+    backdrop-filter: blur(1px);
+    transform: scale(1.01);
+  }
+
+  60% {
+    opacity: 0.7;
+    backdrop-filter: blur(2px);
+    transform: scale(1);
+  }
+
+  100% {
+    opacity: 1;
+    backdrop-filter: blur(3px);
+    transform: scale(1);
+  }
+}
+
+@keyframes mistFade {
+  0% {
+    opacity: 1;
+    backdrop-filter: blur(3px);
+    transform: scale(1);
+  }
+
+  40% {
+    opacity: 0.6;
+    backdrop-filter: blur(2px);
+    transform: scale(1);
+  }
+
+  70% {
+    opacity: 0.2;
+    backdrop-filter: blur(0.5px);
+    transform: scale(1.01);
+  }
+
+  100% {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+    transform: scale(1.02);
+  }
+}
+
+.mist-overlay {
+  transition: opacity 600ms cubic-bezier(0.4, 0, 0.2, 1),
+    backdrop-filter 500ms cubic-bezier(0.4, 0, 0.2, 1),
+    transform 400ms cubic-bezier(0.4, 0, 0.2, 1);
+  /* Add subtle shimmer effect */
+  background-size: 200% 200%;
+  will-change: opacity, backdrop-filter, transform;
+}
+
+.mist-overlay.mist-shimmer {
+  animation: mistShimmer 3s ease-in-out infinite;
+}
+
+/* Enhanced shimmer animation with more sophisticated movement */
+@keyframes mistShimmer {
+  0% {
+    background-position: -50% 0%;
+    opacity: 0.8;
+  }
+
+  25% {
+    background-position: 0% 25%;
+    opacity: 1;
+  }
+
+  50% {
+    background-position: 50% 50%;
+    opacity: 0.9;
+  }
+
+  75% {
+    background-position: 100% 75%;
+    opacity: 1;
+  }
+
+  100% {
+    background-position: 150% 100%;
+    opacity: 0.8;
+  }
+}
+
+/* Smooth content fade transitions during refresh */
+.refresh-content-fade {
+  transition: opacity 400ms cubic-bezier(0.4, 0, 0.2, 1),
+    transform 400ms cubic-bezier(0.4, 0, 0.2, 1),
+    scale 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.refresh-content-fade.fading-out {
+  opacity: 0;
+  transform: translateY(8px);
+  scale: 0.98;
+}
+
+.refresh-content-fade.fading-in {
+  opacity: 1;
+  transform: translateY(0);
+  scale: 1;
+}
+
+/* Apple-style circular slider thumb with gradient trail */
+.apple-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  outline: none;
+  transition: background 0.2s ease;
+}
+
+/* WebKit browsers (Chrome, Safari, Edge) */
+.apple-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  background: #ffffff;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  transition: all 0.15s ease;
+  position: relative;
+  z-index: 2;
+}
+
+.apple-slider::-webkit-slider-thumb:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1);
+  transform: scale(1.05);
+}
+
+.apple-slider::-webkit-slider-thumb:active {
+  box-shadow: 0 2px 4px rgba(37, 99, 235, 0.3), 0 1px 2px rgba(37, 99, 235, 0.2);
+  transform: scale(0.95);
+}
+
+/* Firefox */
+.apple-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  background: #ffffff;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  transition: all 0.15s ease;
+  position: relative;
+  z-index: 2;
+}
+
+.apple-slider::-moz-range-thumb:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1);
+  transform: scale(1.05);
+}
+
+.apple-slider::-moz-range-thumb:active {
+  box-shadow: 0 2px 4px rgba(37, 99, 235, 0.3), 0 1px 2px rgba(37, 99, 235, 0.2);
+  transform: scale(0.95);
+}
+
+/* Firefox track styling */
+.apple-slider::-moz-range-track {
+  height: 4px;
+  border-radius: 2px;
+}
+
+.apple-slider::-moz-range-progress {
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);
+}
+
+/* Dark mode slider thumb */
+.dark .apple-slider::-webkit-slider-thumb {
+  background: #f3f4f6;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.dark .apple-slider::-webkit-slider-thumb:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.dark .apple-slider::-moz-range-thumb {
+  background: #f3f4f6;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.dark .apple-slider::-moz-range-thumb:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Pulsing purple border animation for modal */
+@keyframes purpleBorderPulse {
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 4px rgba(168, 85, 247, 1);
+  }
+
+  50% {
+    box-shadow: 0 0 0 6px rgba(168, 85, 247, 0.6);
+  }
+}
+
+.animate-purple-border-pulse {
+  animation: purpleBorderPulse 2s ease-in-out infinite;
+}
+
+/* Gradient shimmer effect for menu button text - right to left */
+@keyframes gradientShimmer {
+  0% {
+    background-position: 200% center;
+  }
+
+  100% {
+    background-position: -200% center;
+  }
+}
+
+.gradient-shimmer-hover {
+  background-size: 300% auto;
+  transition: font-weight 0.1s ease-in-out;
+  display: inline-block;
+  position: relative;
+}
+
+/* Reserve space for bold text to prevent layout shift */
+.gradient-shimmer-hover::before {
+  content: attr(data-text);
+  font-weight: 600;
+  height: 0;
+  visibility: hidden;
+  overflow: hidden;
+  user-select: none;
+  pointer-events: none;
+  display: block;
+}
+
+.group:hover .gradient-shimmer-hover {
+  animation: gradientShimmer 5s linear infinite;
+  font-weight: 600;
+}
+
+/* Simple gradient text shimmer for Options button text ONLY */
+.gradient-text-shimmer {
+  background: linear-gradient(90deg,
+      #6b7280 0%,
+      #4b5563 15%,
+      #1f2937 30%,
+      #111827 50%,
+      #1f2937 70%,
+      #4b5563 85%,
+      #6b7280 100%);
+  background-size: 300% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transition: font-weight 0.1s ease-in-out;
+  display: inline-block;
+  position: relative;
+}
+
+/* Dark mode gradient */
+.dark .gradient-text-shimmer {
+  background: linear-gradient(90deg,
+      #d1d5db 0%,
+      #e5e7eb 15%,
+      #f3f4f6 30%,
+      #ffffff 50%,
+      #f3f4f6 70%,
+      #e5e7eb 85%,
+      #d1d5db 100%);
+  background-size: 300% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Reserve space for bold text to prevent layout shift */
+.gradient-text-shimmer::before {
+  content: attr(data-text);
+  font-weight: 600;
+  height: 0;
+  visibility: hidden;
+  overflow: hidden;
+  user-select: none;
+  pointer-events: none;
+  display: block;
+  white-space: nowrap;
+}
+
+/* Animate the gradient on hover */
+.group:hover .gradient-text-shimmer {
+  animation: gradientShimmer 5s linear infinite;
+  font-weight: 600;
+}
+
+/* Electric current border animation for Options button */
+@keyframes electricCurrent {
+  0% {
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 8px 2px rgba(255, 255, 255, 0.9), 0 0 12px 4px rgba(255, 255, 255, 0.5);
+  }
+
+  12.5% {
+    top: 0;
+    left: 100%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 8px 2px rgba(255, 255, 255, 0.9), 0 0 12px 4px rgba(255, 255, 255, 0.5);
+  }
+
+  25% {
+    top: 50%;
+    left: 100%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 8px 2px rgba(255, 255, 255, 0.9), 0 0 12px 4px rgba(255, 255, 255, 0.5);
+  }
+
+  37.5% {
+    top: 100%;
+    left: 100%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 8px 2px rgba(255, 255, 255, 0.9), 0 0 12px 4px rgba(255, 255, 255, 0.5);
+  }
+
+  50% {
+    top: 100%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 8px 2px rgba(255, 255, 255, 0.9), 0 0 12px 4px rgba(255, 255, 255, 0.5);
+  }
+
+  62.5% {
+    top: 100%;
+    left: 0;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 8px 2px rgba(255, 255, 255, 0.9), 0 0 12px 4px rgba(255, 255, 255, 0.5);
+  }
+
+  75% {
+    top: 50%;
+    left: 0;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 8px 2px rgba(255, 255, 255, 0.9), 0 0 12px 4px rgba(255, 255, 255, 0.5);
+  }
+
+  87.5% {
+    top: 0;
+    left: 0;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 8px 2px rgba(255, 255, 255, 0.9), 0 0 12px 4px rgba(255, 255, 255, 0.5);
+  }
+
+  100% {
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 8px 2px rgba(255, 255, 255, 0.9), 0 0 12px 4px rgba(255, 255, 255, 0.5);
+  }
+}
+
+.electric-current-animation::after {
+  content: '';
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 0 8px 2px rgba(255, 255, 255, 0.9), 0 0 12px 4px rgba(255, 255, 255, 0.5);
+  animation: electricCurrent 1s linear forwards;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Dark mode electric current - same white ball for consistency */
+.dark .electric-current-animation::after {
+  background: white;
+  box-shadow: 0 0 10px 3px rgba(255, 255, 255, 0.95), 0 0 15px 5px rgba(255, 255, 255, 0.6);
+}
+
+@keyframes electricCurrentDark {
+  0% {
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 10px 3px rgba(255, 255, 255, 0.95), 0 0 15px 5px rgba(255, 255, 255, 0.6);
+  }
+
+  12.5% {
+    top: 0;
+    left: 100%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 10px 3px rgba(255, 255, 255, 0.95), 0 0 15px 5px rgba(255, 255, 255, 0.6);
+  }
+
+  25% {
+    top: 50%;
+    left: 100%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 10px 3px rgba(255, 255, 255, 0.95), 0 0 15px 5px rgba(255, 255, 255, 0.6);
+  }
+
+  37.5% {
+    top: 100%;
+    left: 100%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 10px 3px rgba(255, 255, 255, 0.95), 0 0 15px 5px rgba(255, 255, 255, 0.6);
+  }
+
+  50% {
+    top: 100%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 10px 3px rgba(255, 255, 255, 0.95), 0 0 15px 5px rgba(255, 255, 255, 0.6);
+  }
+
+  62.5% {
+    top: 100%;
+    left: 0;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 10px 3px rgba(255, 255, 255, 0.95), 0 0 15px 5px rgba(255, 255, 255, 0.6);
+  }
+
+  75% {
+    top: 50%;
+    left: 0;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 10px 3px rgba(255, 255, 255, 0.95), 0 0 15px 5px rgba(255, 255, 255, 0.6);
+  }
+
+  87.5% {
+    top: 0;
+    left: 0;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 10px 3px rgba(255, 255, 255, 0.95), 0 0 15px 5px rgba(255, 255, 255, 0.6);
+  }
+
+  100% {
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 10px 3px rgba(255, 255, 255, 0.95), 0 0 15px 5px rgba(255, 255, 255, 0.6);
+  }
+}
+
+/* Northern Lights Aurora Wave Animation - Emerald & Blue */
+
+/* Flowing wave animation - mimics the SVG aurora paths */
+@keyframes auroraFlow {
+  0% {
+    background-position: 0% 30%, 50% 40%, 100% 50%, 0% 60%;
+    opacity: 0.8;
+  }
+
+  25% {
+    background-position: 25% 40%, 75% 50%, 125% 60%, 25% 70%;
+    opacity: 0.9;
+  }
+
+  50% {
+    background-position: 50% 50%, 100% 60%, 150% 70%, 50% 80%;
+    opacity: 0.7;
+  }
+
+  75% {
+    background-position: 75% 40%, 125% 50%, 175% 60%, 75% 70%;
+    opacity: 0.85;
+  }
+
+  100% {
+    background-position: 100% 30%, 150% 40%, 200% 50%, 100% 60%;
+    opacity: 0.8;
+  }
+}
+
+/* Shimmer pulse - mimics the opacity animation on aurora gradient stops */
+@keyframes auroraPulse {
+
+  0%,
+  100% {
+    opacity: 0.6;
+  }
+
+  33% {
+    opacity: 0.9;
+  }
+
+  66% {
+    opacity: 0.7;
+  }
+}
+
+/* Animated gradient - Northern Lights emerald and blue aurora */
+.northern-lights-gradient-animated {
+  position: relative;
+  background: linear-gradient(135deg,
+      #10b981 0%,
+      /* emerald-500 */
+      #34d399 30%,
+      /* emerald-400 */
+      #3b82f6 60%,
+      /* blue-500 */
+      #10b981 100%);
+  background-size: 400% 400%;
+  animation: auroraFlow 20s ease-in-out infinite;
+  transition: all 0.5s ease;
+  overflow: hidden;
+  filter: drop-shadow(0 0 12px rgba(16, 185, 129, 0.3));
+  color: #ffffff;
+  isolation: isolate;
+}
+
+/* Ensure content stays above aurora layers */
+.northern-lights-gradient-animated>* {
+  position: relative;
+  z-index: 1;
+  color: #ffffff;
+}
+
+/* Aurora wave layer 1 - Main flowing gradient pool */
+.northern-lights-gradient-animated::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 200% 150% at 20% 30%, rgba(16, 185, 129, 0.7) 0%, transparent 60%),
+    radial-gradient(ellipse 180% 140% at 80% 70%, rgba(52, 211, 153, 0.6) 0%, transparent 60%),
+    radial-gradient(ellipse 160% 130% at 50% 50%, rgba(59, 130, 246, 0.5) 0%, transparent 65%);
+  background-size: 300% 300%, 320% 320%, 340% 340%;
+  animation: auroraFlow 20s ease-in-out infinite;
+  pointer-events: none;
+  filter: blur(8px);
+  z-index: 0;
+}
+
+/* Aurora wave layer 2 - Secondary shimmer highlights */
+.northern-lights-gradient-animated::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 150% 120% at 30% 20%, rgba(59, 130, 246, 0.5) 0%, transparent 50%),
+    radial-gradient(ellipse 140% 110% at 70% 80%, rgba(16, 185, 129, 0.4) 0%, transparent 50%),
+    radial-gradient(ellipse 130% 100% at 50% 50%, rgba(34, 211, 153, 0.3) 0%, transparent 55%);
+  background-size: 250% 250%, 270% 270%, 290% 290%;
+  animation: auroraFlow 15s ease-in-out infinite reverse, auroraPulse 7s ease-in-out infinite;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  filter: blur(6px);
+  z-index: 0;
+}
+
+/* Static gradient - Same aurora frozen in time */
+.northern-lights-gradient-static {
+  position: relative;
+  background: linear-gradient(135deg,
+      #10b981 0%,
+      #34d399 30%,
+      #3b82f6 60%,
+      #10b981 100%);
+  transition: all 0.5s ease;
+  overflow: hidden;
+  filter: drop-shadow(0 0 12px rgba(16, 185, 129, 0.3));
+  color: #ffffff;
+  isolation: isolate;
+}
+
+/* Ensure content stays above aurora layers */
+.northern-lights-gradient-static>* {
+  position: relative;
+  z-index: 1;
+  color: #ffffff;
+}
+
+/* Static aurora wave layer 1 - frozen position */
+.northern-lights-gradient-static::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 200% 150% at 20% 30%, rgba(16, 185, 129, 0.7) 0%, transparent 60%),
+    radial-gradient(ellipse 180% 140% at 80% 70%, rgba(52, 211, 153, 0.6) 0%, transparent 60%),
+    radial-gradient(ellipse 160% 130% at 50% 50%, rgba(59, 130, 246, 0.5) 0%, transparent 65%);
+  pointer-events: none;
+  filter: blur(8px);
+  z-index: 0;
+}
+
+/* Static aurora wave layer 2 - frozen shimmer */
+.northern-lights-gradient-static::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 150% 120% at 30% 20%, rgba(59, 130, 246, 0.5) 0%, transparent 50%),
+    radial-gradient(ellipse 140% 110% at 70% 80%, rgba(16, 185, 129, 0.4) 0%, transparent 50%),
+    radial-gradient(ellipse 130% 100% at 50% 50%, rgba(34, 211, 153, 0.3) 0%, transparent 55%);
+  pointer-events: none;
+  mix-blend-mode: screen;
+  filter: blur(6px);
+  opacity: 0.7;
+  z-index: 0;
+}
+
+/* Dark mode - Deeper aurora with more vibrant glow */
+.dark .northern-lights-gradient-animated {
+  background: linear-gradient(135deg,
+      #059669 0%,
+      /* emerald-600 */
+      #10b981 30%,
+      /* emerald-500 */
+      #2563eb 60%,
+      /* blue-600 */
+      #059669 100%);
+  background-size: 400% 400%;
+  animation: auroraFlow 20s ease-in-out infinite;
+  filter: drop-shadow(0 0 16px rgba(16, 185, 129, 0.5));
+}
+
+/* Dark mode aurora wave layer 1 */
+.dark .northern-lights-gradient-animated::before {
+  background:
+    radial-gradient(ellipse 200% 150% at 20% 30%, rgba(16, 185, 129, 0.8) 0%, transparent 60%),
+    radial-gradient(ellipse 180% 140% at 80% 70%, rgba(52, 211, 153, 0.7) 0%, transparent 60%),
+    radial-gradient(ellipse 160% 130% at 50% 50%, rgba(37, 99, 235, 0.6) 0%, transparent 65%);
+  background-size: 300% 300%, 320% 320%, 340% 340%;
+  animation: auroraFlow 20s ease-in-out infinite;
+  filter: blur(10px);
+  z-index: 0;
+}
+
+/* Dark mode aurora wave layer 2 */
+.dark .northern-lights-gradient-animated::after {
+  background:
+    radial-gradient(ellipse 150% 120% at 30% 20%, rgba(59, 130, 246, 0.6) 0%, transparent 50%),
+    radial-gradient(ellipse 140% 110% at 70% 80%, rgba(16, 185, 129, 0.5) 0%, transparent 50%),
+    radial-gradient(ellipse 130% 100% at 50% 50%, rgba(34, 211, 153, 0.4) 0%, transparent 55%);
+  background-size: 250% 250%, 270% 270%, 290% 290%;
+  animation: auroraFlow 15s ease-in-out infinite reverse, auroraPulse 7s ease-in-out infinite;
+  filter: blur(8px);
+  z-index: 0;
+}
+
+.dark .northern-lights-gradient-static {
+  background: linear-gradient(135deg,
+      #059669 0%,
+      #10b981 30%,
+      #2563eb 60%,
+      #059669 100%);
+  filter: drop-shadow(0 0 16px rgba(16, 185, 129, 0.5));
+}
+
+/* Dark mode static aurora wave layer 1 */
+.dark .northern-lights-gradient-static::before {
+  background:
+    radial-gradient(ellipse 200% 150% at 20% 30%, rgba(16, 185, 129, 0.8) 0%, transparent 60%),
+    radial-gradient(ellipse 180% 140% at 80% 70%, rgba(52, 211, 153, 0.7) 0%, transparent 60%),
+    radial-gradient(ellipse 160% 130% at 50% 50%, rgba(37, 99, 235, 0.6) 0%, transparent 65%);
+  filter: blur(10px);
+  z-index: 0;
+}
+
+/* Dark mode static aurora wave layer 2 */
+.dark .northern-lights-gradient-static::after {
+  background:
+    radial-gradient(ellipse 150% 120% at 30% 20%, rgba(59, 130, 246, 0.6) 0%, transparent 50%),
+    radial-gradient(ellipse 140% 110% at 70% 80%, rgba(16, 185, 129, 0.5) 0%, transparent 50%),
+    radial-gradient(ellipse 130% 100% at 50% 50%, rgba(34, 211, 153, 0.4) 0%, transparent 55%);
+  filter: blur(8px);
+  opacity: 0.8;
+  z-index: 0;
+}
+
+/* ===============================================
+   BUTTON GRADIENT - Clean Professional Design
+   =============================================== */
+
+/* Clean blue gradient for menu button - simple & professional */
+.menu-button-gradient {
+  position: relative;
+  background: linear-gradient(to right, #2563eb, #1d4ed8);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  color: #ffffff;
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(37, 99, 235, 0.1) inset;
+}
+
+.menu-button-gradient:hover {
+  background: linear-gradient(to right, #3b82f6, #2563eb);
+  box-shadow:
+    0 4px 12px rgba(59, 130, 246, 0.25),
+    0 0 0 1px rgba(59, 130, 246, 0.2) inset;
+  transform: translateY(-1px);
+}
+
+/* Ensure text and icons are white, bold, and on top */
+.menu-button-gradient * {
+  color: #ffffff !important;
+}
+
+.menu-button-gradient span {
+  font-weight: 500 !important;
+}
+
+/* Dark mode - brighter, more vibrant */
+.dark .menu-button-gradient {
+  background: linear-gradient(to right, #2563eb, #1d4ed8);
+  box-shadow:
+    0 2px 8px rgba(37, 99, 235, 0.3),
+    0 0 0 1px rgba(37, 99, 235, 0.15) inset,
+    0 0 20px rgba(37, 99, 235, 0.1);
+}
+
+.dark .menu-button-gradient:hover {
+  background: linear-gradient(to right, #3b82f6, #2563eb);
+  box-shadow:
+    0 4px 16px rgba(59, 130, 246, 0.4),
+    0 0 0 1px rgba(59, 130, 246, 0.25) inset,
+    0 0 30px rgba(59, 130, 246, 0.2);
+  transform: translateY(-1px);
+}
+
+/* Fix for persistent blue screen overlay issue */
+#preact-border-shadow-host {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  opacity: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+}
