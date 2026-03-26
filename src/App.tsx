@@ -8791,9 +8791,9 @@ Would you like me to help you create or configure any of these elements? Just as
   // Show "Screen Too Small" blocking overlay if viewport is less than 1024px
   if (viewportWidth < 1024) {
     // Exception for Google OAuth popup flow
-    const isAuthPopup = window.location.hash.includes('access_token') || 
-                       window.location.search.includes('code=') ||
-                       (window.opener && window.opener !== window);
+    const isAuthPopup = window.location.hash.includes('access_token') ||
+      window.location.search.includes('code=') ||
+      (window.opener && window.opener !== window);
 
     if (isAuthPopup) {
       return (
@@ -8811,7 +8811,7 @@ Would you like me to help you create or configure any of these elements? Just as
         </div>
       );
     }
-    
+
     return <ScreenTooSmall isDarkMode={isDarkMode} />;
   }
 
