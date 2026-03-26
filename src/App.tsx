@@ -556,7 +556,8 @@ export default function App() {
       console.log('🔐 Auth state change detected:', _event);
       if (session?.access_token) {
         setAccessToken(session.access_token);
-        if (session.user?.email) {
+        // Only set email state if NOT on login screen to prevent flickering/pre-filling during OAuth
+        if (session.user?.email && currentStep !== 'login') {
           const userEmail = session.user.email;
           setEmail(userEmail);
           offlineStorage.setScope(userEmail);
@@ -5206,10 +5207,9 @@ export default function App() {
           const token = session.access_token;
           setAccessToken(token);
 
+          // We don't setEmail here to prevent the login form from flashing
           if (session.user?.email) {
-            const userEmail = session.user.email;
-            setEmail(userEmail);
-            offlineStorage.setScope(userEmail);
+            offlineStorage.setScope(session.user.email);
           }
 
           try {
@@ -8790,6 +8790,28 @@ Would you like me to help you create or configure any of these elements? Just as
 
   // Show "Screen Too Small" blocking overlay if viewport is less than 1024px
   if (viewportWidth < 1024) {
+    // Exception for Google OAuth popup flow
+    const isAuthPopup = window.location.hash.includes('access_token') || 
+                       window.location.search.includes('code=') ||
+                       (window.opener && window.opener !== window);
+
+    if (isAuthPopup) {
+      return (
+        <div className={`min-h-screen flex items-center justify-center ${isDarkMode ? 'bg-gray-900' : 'bg-gray-50'}`}>
+          <div className="text-center p-8 bg-white dark:bg-gray-800 rounded-2xl shadow-xl max-w-xs w-full mx-4 border border-gray-100 dark:border-gray-700">
+            <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Check className="w-8 h-8 text-green-600 dark:text-green-400" />
+            </div>
+            <h2 className={`text-xl font-semibold mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Connecting to Aces AI</h2>
+            <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>We are finalizing your login. You can close this window if it stays open.</p>
+            <div className="mt-8 flex justify-center">
+              <Loader2 className="w-6 h-6 animate-spin text-blue-500" />
+            </div>
+          </div>
+        </div>
+      );
+    }
+    
     return <ScreenTooSmall isDarkMode={isDarkMode} />;
   }
 
