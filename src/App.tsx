@@ -663,15 +663,8 @@ export default function App() {
   const hasHoveredOnceRef = useRef(false);
   const [isOptionsButtonRecharging, setIsOptionsButtonRecharging] = useState(false);
 
-  // Northern lights indicator preference - Load from localStorage, default to false (normal indicator)
-  const [useNorthernLights, setUseNorthernLights] = useState(() => {
-    try {
-      const saved = offlineStorage.getItem('acesai_use_northern_lights');
-      return saved ? JSON.parse(saved) : false; // Default to normal indicator
-    } catch {
-      return false;
-    }
-  });
+  // Northern lights indicator preference - Always enabled
+  const [useNorthernLights, setUseNorthernLights] = useState(true);
   const [showAuroraButton, setShowAuroraButton] = useState(false);
   const [auroraButtonPosition, setAuroraButtonPosition] = useState({ x: 0, y: 0 });
   const [isHoveringAuroraButton, setIsHoveringAuroraButton] = useState(false);
@@ -2049,14 +2042,7 @@ export default function App() {
     };
   }, [showAuroraButton]);
 
-  // Save northern lights preference to localStorage whenever it changes
-  useEffect(() => {
-    try {
-      offlineStorage.setItem('acesai_use_northern_lights', useNorthernLights);
-    } catch (error) {
-      console.log('Failed to save northern lights preference:', error);
-    }
-  }, [useNorthernLights]);
+  // Northern lights preference - logic removed as it's now always-on
 
   // Save banner collapse state to localStorage whenever it changes
   useEffect(() => {
@@ -11560,15 +11546,7 @@ Would you like me to help you create or configure any of these elements? Just as
                               fill="url(#aurora1)"
                               filter="url(#auroraGlow)"
                               d="M 0 100 Q 250 70, 500 100 T 1000 100 T 1500 100 T 2000 100 L 2000 0 L 0 0 Z"
-                              className="cursor-pointer aurora-wave-1"
-                              onClick={(e) => {
-                                // Use pageX/pageY for document-relative positioning that stays in place when scrolling
-                                setAuroraButtonPosition({
-                                  x: e.pageX - 60,
-                                  y: e.pageY - 12
-                                });
-                                setShowAuroraButton(true);
-                              }}
+                              className="aurora-wave-1"
                             />
 
                             {/* Layer 2 - Secondary wave - CSS animated with Web Animations API control */}
@@ -11578,15 +11556,7 @@ Would you like me to help you create or configure any of these elements? Just as
                               filter="url(#auroraGlow)"
                               opacity="0.75"
                               d="M 0 130 Q 300 95, 600 130 T 1200 130 T 1800 130 T 2000 130 L 2000 0 L 0 0 Z"
-                              className="cursor-pointer aurora-wave-2"
-                              onClick={(e) => {
-                                // Use pageX/pageY for document-relative positioning that stays in place when scrolling
-                                setAuroraButtonPosition({
-                                  x: e.pageX - 60,
-                                  y: e.pageY - 12
-                                });
-                                setShowAuroraButton(true);
-                              }}
+                              className="aurora-wave-2"
                             />
                           </g>
                         </svg>
@@ -11645,34 +11615,6 @@ Would you like me to help you create or configure any of these elements? Just as
                           className="w-24 h-24 -mt-6 pointer-events-none"
                         />
 
-                        {/* TradingView-style Status Indicator - positioned outside top-right */}
-                        {!useNorthernLights && (
-                          <div
-                            className="absolute -top-7 -right-1 w-4 h-4 cursor-pointer"
-                            onClick={(e) => {
-                              e.stopPropagation(); // Prevent triggering parent button's onClick
-                              setUseNorthernLights(true);
-                            }}
-                            title="Switch to Northern Lights indicator"
-                          >
-                            {/* Outer fading gradient ring */}
-                            <div
-                              className="absolute inset-0 w-4 h-4 rounded-full transition-all duration-300"
-                              style={{
-                                background: indicatorIsOnline
-                                  ? 'radial-gradient(circle, rgba(34, 197, 94, 0.8) 0%, rgba(34, 197, 94, 0.6) 30%, rgba(34, 197, 94, 0.3) 60%, rgba(34, 197, 94, 0.1) 80%, rgba(255, 255, 255, 0) 100%)'
-                                  : 'radial-gradient(circle, rgba(156, 163, 175, 0.6) 0%, rgba(156, 163, 175, 0.4) 30%, rgba(156, 163, 175, 0.2) 60%, rgba(156, 163, 175, 0.05) 80%, rgba(255, 255, 255, 0) 100%)'
-                              }}
-                            ></div>
-                            {/* Inner blinking dot - much smaller */}
-                            <div className="absolute inset-0 flex items-center justify-center">
-                              <div className={`w-2 h-2 rounded-full transition-colors duration-300 ${indicatorIsOnline
-                                ? 'bg-green-500 animate-fast-green-pulse'
-                                : 'bg-gray-400 dark:bg-gray-500'
-                                }`}></div>
-                            </div>
-                          </div>
-                        )}
                       </motion.button>
 
                       {/* "Show" indicator - Only when account number is hidden and user clicked once */}
@@ -11720,49 +11662,6 @@ Would you like me to help you create or configure any of these elements? Just as
                       </AnimatePresence>
                     </motion.div>
 
-                    {/* Aurora Control Icon */}
-                    <AnimatePresence>
-                      {showAuroraButton && useNorthernLights && (
-                        <motion.div
-                          data-aurora-button
-                          initial={{ opacity: 0, x: -10 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          exit={{ opacity: 0, x: -10 }}
-                          transition={{ duration: 0.2, ease: "easeOut" }}
-                          onClick={() => {
-                            setUseNorthernLights(false);
-                            setShowAuroraButton(false);
-                          }}
-                          onMouseEnter={() => setIsHoveringAuroraButton(true)}
-                          onMouseLeave={() => setIsHoveringAuroraButton(false)}
-                          className="absolute z-[9999] pointer-events-auto cursor-pointer"
-                          style={{
-                            top: `${auroraButtonPosition.y}px`,
-                            left: `${auroraButtonPosition.x}px`,
-                          }}
-                          title="Remove northern lights effect"
-                        >
-                          <motion.div
-                            className="relative w-6 h-6"
-                            animate={{
-                              scale: isHoveringAuroraButton ? 1.1 : 1
-                            }}
-                            transition={{
-                              scale: {
-                                duration: 0.2,
-                                ease: "easeOut"
-                              }
-                            }}
-                            style={{
-                              '--stroke-0': '#fff',
-                              '--fill-0': '#fff'
-                            } as React.CSSProperties}
-                          >
-                            <LucideBan1 />
-                          </motion.div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
 
                     <AnimatePresence>
                       {!isBannerCollapsed && (
