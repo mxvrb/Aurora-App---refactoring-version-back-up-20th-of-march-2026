@@ -380,164 +380,200 @@ export function WhatsAppTestAIPanel({
               position:      'absolute',
               bottom:        PANEL_OFFSET,
               right:         PANEL_OFFSET,
-              width:         400,
-              height:        560,
+              width:         390,
+              height:        620,
               maxHeight:     'calc(100vh - 80px)',
               maxWidth:      'calc(100vw - 32px)',
-              borderRadius:  24,
+              borderRadius:  16,
               overflow:      'hidden',
               pointerEvents: 'auto',
-              ...glass,
+              background:    isDarkMode ? '#0b141a' : '#efeae2',
+              boxShadow:     isDarkMode ? '0 16px 40px rgba(0,0,0,0.5)' : '0 16px 40px rgba(0,0,0,0.2)',
             }}
           >
             {/* Header — drag the panel from here */}
             <div
               onMouseDown={startDrag}
-              className="flex items-center justify-between px-5 py-3.5 flex-shrink-0"
+              className="flex items-center justify-between px-4 py-2 flex-shrink-0"
               style={{
-                background:   'linear-gradient(135deg,#25D366 0%,#128C7E 50%,#075E54 100%)',
-                borderBottom: '1px solid rgba(255,255,255,0.1)',
+                background:   isDarkMode ? '#202c33' : '#008069',
                 cursor:       'grab',
-                borderRadius: '24px 24px 0 0',
               }}
             >
               {/* Avatar + title (pointer-events:none so text doesn't fight drag) */}
-              <div className="flex items-center gap-3" style={{ pointerEvents: 'none' }}>
-                <div className="relative">
-                  <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm border border-white/20">
-                    <Bot className="w-5 h-5 text-white" />
+              <div className="flex items-center gap-3 py-1" style={{ pointerEvents: 'none' }}>
+                <div className="w-[40px] h-[40px] rounded-full flex items-center justify-center overflow-hidden" style={{ background: '#10b981', '--fill-0': 'white' } as React.CSSProperties}>
+                  <div style={{ width: 18, height: 18, transform: 'scale(1.5) translateY(1.5px)', transformOrigin: 'center' }}>
+                    <RobotExpandedOpt />
                   </div>
-                  <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-green-300 border-2 border-[#128C7E]" />
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-white font-semibold text-sm leading-tight">AI Playground</span>
-                  <span className="text-white/70 text-xs font-medium">Online · Test &amp; Train</span>
+                  <span className="text-white font-medium text-[16px] leading-[21px]">AI Assistant</span>
+                  <span className="text-white/80 text-[13px] leading-[20px]">online</span>
                 </div>
               </div>
 
               {/* Buttons — stopPropagation so clicks don't trigger drag */}
-              <div className="flex items-center gap-1" onMouseDown={e => e.stopPropagation()}>
+              <div className="flex items-center gap-2" onMouseDown={e => e.stopPropagation()}>
                 <button onClick={handleMinimize}
-                  className="p-2 rounded-full hover:bg-white/15 text-white/80 hover:text-white transition-colors cursor-pointer">
-                  <Minus className="w-4 h-4" />
+                  className="p-1.5 rounded-full hover:bg-white/10 text-white transition-colors cursor-pointer">
+                  <Minus className="w-[20px] h-[20px]" />
                 </button>
                 <button onClick={handleClose}
-                  className="p-2 rounded-full hover:bg-white/15 text-white/80 hover:text-white transition-colors cursor-pointer">
-                  <X className="w-4 h-4" />
+                  className="p-1.5 rounded-full hover:bg-white/10 text-white transition-colors cursor-pointer">
+                  <X className="w-[20px] h-[20px]" />
                 </button>
               </div>
             </div>
 
             {/* Chat area */}
             <div
-              className="flex-1 overflow-y-auto px-4 py-4 space-y-3"
-              style={{ scrollbarWidth: 'thin', cursor: 'default', userSelect: 'text' }}
-              onMouseDown={e => e.stopPropagation()}
-            >
-              {messages.length === 0 ? (
-                <div className="h-full flex flex-col items-center justify-center text-center space-y-4 px-4">
-                  <div className="relative">
-                    <div className="absolute inset-0 bg-emerald-500/15 blur-2xl rounded-full" />
-                    <div className="w-16 h-16 rounded-2xl flex items-center justify-center relative z-10 border"
-                      style={{
-                        background:  isDarkMode ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.8)',
-                        borderColor: isDarkMode ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)',
-                        boxShadow:   '0 8px 24px rgba(37,211,102,0.1)',
-                      }}>
-                      <FlaskConical className="w-8 h-8 text-emerald-500" />
-                    </div>
-                  </div>
-                  <div className="space-y-1.5">
-                    <h4 className="text-base font-semibold text-gray-900 dark:text-white">Test your Assistant</h4>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 leading-relaxed max-w-[260px] mx-auto">
-                      Send a message to see how your AI responds based on its current training.
-                    </p>
-                  </div>
-                  <div className="flex flex-wrap gap-2 justify-center mt-2">
-                    {['"What are your hours?"', '"How do I book?"', '"Show me services"'].map((q, i) => (
-                      <button key={i}
-                        onClick={() => setInputValue(q.replace(/"/g, ''))}
-                        className="px-3.5 py-1.5 text-[11px] font-medium rounded-full transition-all cursor-pointer border"
-                        style={{
-                          background:  isDarkMode ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.03)',
-                          borderColor: isDarkMode ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.06)',
-                          color:       isDarkMode ? '#d1d5db' : '#4b5563',
-                        }}>
-                        {q}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              ) : (
-                <>
-                  {messages.map((msg, i) => (
-                    <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                      {msg.role === 'ai' && (
-                        <div className="w-7 h-7 rounded-full flex-shrink-0 mr-2 mt-0.5 flex items-center justify-center"
-                          style={{ background: 'linear-gradient(135deg,#25D366,#128C7E)' }}>
-                          <Bot className="w-4 h-4 text-white" />
-                        </div>
-                      )}
-                      <div className="max-w-[75%] px-3.5 py-2.5 text-sm leading-relaxed"
-                        style={{
-                          borderRadius: msg.role === 'user' ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
-                          background:   msg.role === 'user'
-                            ? 'linear-gradient(135deg,#25D366,#128C7E)'
-                            : isDarkMode ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)',
-                          color:  msg.role === 'user' ? 'white' : isDarkMode ? '#e5e7eb' : '#1f2937',
-                          border: msg.role === 'user' ? 'none' : isDarkMode
-                            ? '1px solid rgba(255,255,255,0.06)' : '1px solid rgba(0,0,0,0.04)',
-                        }}>
-                        {msg.text}
-                      </div>
-                    </div>
-                  ))}
-                  <div ref={messagesEndRef} />
-                </>
-              )}
-            </div>
-
-            {/* Input area */}
-            <div
-              className="px-4 py-3 flex-shrink-0"
+              className="flex-1 overflow-y-auto px-[5%] py-4 space-y-2 relative"
               style={{
-                background:   isDarkMode ? 'rgba(18,18,24,0.98)' : 'rgba(255,255,255,0.98)',
-                borderTop:    isDarkMode ? '1px solid rgba(255,255,255,0.06)' : '1px solid rgba(0,0,0,0.04)',
-                borderRadius: '0 0 24px 24px',
+                scrollbarWidth: 'thin',
+                cursor: 'default',
+                userSelect: 'text',
               }}
               onMouseDown={e => e.stopPropagation()}
             >
-              <div className="relative flex items-end rounded-2xl overflow-hidden"
+              {/* Authentic WhatsApp Doodles pattern overlay */}
+              <div className="absolute inset-0 pointer-events-none" style={{
+                backgroundImage: isDarkMode 
+                  ? 'url("https://web.whatsapp.com/img/bg-chat-tile-dark_a4be512e7195b6b733d9110b408f075d.png")'
+                  : 'url("https://web.whatsapp.com/img/bg-chat-tile-light_686b98c9fdffef3f63127759e2057750.png")',
+                backgroundSize: '412.5px 749.25px',
+                backgroundRepeat: 'repeat',
+                backgroundPosition: 'center',
+                opacity: isDarkMode ? 0.05 : 0.08,
+              }} />
+              
+              <div className="relative z-10 flex flex-col h-full">
+                {messages.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center pt-2 space-y-4 flex-1">
+                    <div className="text-[12.5px] px-3 py-1.5 rounded-md text-center max-w-[90%] shadow-sm leading-[18px]"
+                      style={{
+                        background: isDarkMode ? '#182229' : '#FFEECD',
+                        color: isDarkMode ? '#8696A0' : '#54656F',
+                      }}>
+                      <span className="mr-1 inline-block translate-y-[1px]">🔒</span> Messages and calls are end-to-end encrypted. No one outside of this chat, not even WhatsApp, can read or listen to them.
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex flex-col space-y-[2px]">
+                    {messages.map((msg, i) => {
+                      const isUser = msg.role === 'user';
+                      const isFirstInSequence = i === 0 || messages[i - 1].role !== msg.role;
+                      
+                      return (
+                        <div key={i} className={`flex ${isUser ? 'justify-end' : 'justify-start'} relative group`}>
+                          <div className="relative max-w-[85%] min-w-[80px] px-[9px] pt-[6px] pb-[4px] text-[14.2px] leading-[19px] shadow-[0_1px_0.5px_rgba(11,20,26,.13)]"
+                            style={{
+                              borderRadius: isFirstInSequence 
+                                ? (isUser ? '8px 0 8px 8px' : '0 8px 8px 8px')
+                                : '8px',
+                              background: isUser
+                                ? (isDarkMode ? '#005c4b' : '#d9fdd3')
+                                : (isDarkMode ? '#202c33' : '#ffffff'),
+                              color: isDarkMode ? '#e9edef' : '#111b21',
+                              marginTop: isFirstInSequence ? '8px' : '0',
+                            }}>
+                            {/* Authentic tail (only on first message of sequence) */}
+                            {isFirstInSequence && (
+                              <svg 
+                                viewBox="0 0 8 13" 
+                                width="8" 
+                                height="13" 
+                                className="absolute top-0"
+                                style={{
+                                  [isUser ? 'right' : 'left']: '-8px',
+                                  color: isUser 
+                                    ? (isDarkMode ? '#005c4b' : '#d9fdd3') 
+                                    : (isDarkMode ? '#202c33' : '#ffffff'),
+                                }}
+                              >
+                                {isUser ? (
+                                  <path fill="currentColor" d="M5.188 0H0v11.193l6.467-8.625C7.526 1.156 6.958 0 5.188 0z"/>
+                                ) : (
+                                  <path fill="currentColor" d="M1.533 2.568L8 11.193V0H2.812C1.042 0 .474 1.156 1.533 2.568z"/>
+                                )}
+                              </svg>
+                            )}
+                            
+                            <div className="flex flex-wrap items-end justify-end">
+                              <div className="flex-1 break-words min-w-[60px] pb-1 pr-4">
+                                {msg.text}
+                              </div>
+                                
+                              <div className="flex items-center gap-1 text-[11px] leading-[15px] select-none h-[15px] mb-[2px] ml-auto shrink-0"
+                                style={{ 
+                                  color: isDarkMode ? 'rgba(255,255,255,0.6)' : '#667781' 
+                                }}>
+                                {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                {isUser && (
+                                  <svg viewBox="0 0 16 11" width="16" height="11" className={isDarkMode ? "fill-[#53bdeb]" : "fill-[#53bdeb]"}>
+                                    <path d="M11.8 1.6L10.4 0.2C10.3 0.1 10.1 0 10 0s-0.3 0.1-0.4 0.2L5.2 4.6 3.8 3.2C3.7 3.1 3.5 3 3.4 3s-0.3 0.1-0.4 0.2L1.6 4.6c-0.2 0.2-0.2 0.5 0 0.7l2.9 2.9c0.1 0.1 0.3 0.2 0.4 0.2s0.3-0.1 0.4-0.2l6.5-6.5C12 1.9 12 1.6 11.8 1.6z M15.8 1.6L14.4 0.2C14.3 0.1 14.1 0 14 0s-0.3 0.1-0.4 0.2l-3.2 3.2 1.4 1.4 2.5-2.5C16 2.1 16 1.8 15.8 1.6z M7.8 7.2L6.4 8.6c-0.1 0.1-0.3 0.2-0.4 0.2s-0.3-0.1-0.4-0.2L5.2 8.2l1.4-1.4L7.8 7.2z"></path>
+                                  </svg>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                    <div ref={messagesEndRef} />
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Input area & Floating quick replies */}
+            <div className="flex flex-col flex-shrink-0 relative z-20">
+              {messages.length === 0 && (
+                <div className="flex gap-2 overflow-x-auto px-4 pb-2 pt-1 no-scrollbar" style={{ scrollbarWidth: 'none' }}>
+                  {['"What are your hours?"', '"How do I book?"', '"Show me services"'].map((q, i) => (
+                    <button key={i}
+                      onClick={() => setInputValue(q.replace(/"/g, ''))}
+                      className="px-3 py-1.5 text-[13px] rounded-full transition-all cursor-pointer shadow-sm border whitespace-nowrap"
+                      style={{
+                        background: isDarkMode ? '#202c33' : '#ffffff',
+                        color: isDarkMode ? '#e9edef' : '#111b21',
+                        borderColor: isDarkMode ? '#202c33' : '#e5e7eb',
+                      }}>
+                      {q}
+                    </button>
+                  ))}
+                </div>
+              )}
+              <div
+                className="px-4 py-2 flex items-end gap-2"
                 style={{
-                  background: isDarkMode ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.03)',
-                  border:     isDarkMode ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(0,0,0,0.06)',
-                }}>
-                <textarea
-                  value={inputValue}
-                  onChange={e => setInputValue(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  placeholder="Message your AI..."
-                  className="w-full max-h-[100px] min-h-[44px] py-3 pl-4 pr-12 bg-transparent text-sm text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none resize-none"
-                  rows={1}
-                  style={{ cursor: 'text', userSelect: 'text' }}
-                />
+                  background:   isDarkMode ? '#202c33' : '#f0f2f5',
+                }}
+                onMouseDown={e => e.stopPropagation()}
+              >
+                <div className="flex-1 flex items-end rounded-[21px] overflow-hidden px-4 py-[9px]"
+                  style={{
+                    background: isDarkMode ? '#2a3942' : '#ffffff',
+                  }}>
+                  <textarea
+                    value={inputValue}
+                    onChange={e => setInputValue(e.target.value)}
+                    onKeyDown={handleKeyDown}
+                    placeholder="Type a message"
+                    className="w-full max-h-[100px] min-h-[20px] bg-transparent text-[15px] leading-[20px] text-gray-900 dark:text-[#e9edef] placeholder-[#8696a0] focus:outline-none resize-none"
+                    rows={1}
+                    style={{ cursor: 'text', userSelect: 'text', padding: '0' }}
+                  />
+                </div>
                 <button
                   onClick={handleSend}
                   disabled={!inputValue.trim()}
-                  className="absolute right-1.5 bottom-1.5 w-8 h-8 rounded-full flex items-center justify-center text-white disabled:opacity-30 disabled:cursor-not-allowed transition-all cursor-pointer"
+                  className="w-10 h-10 rounded-full flex flex-shrink-0 items-center justify-center text-white disabled:opacity-60 transition-all cursor-pointer shadow-sm mb-[4px]"
                   style={{
-                    background: inputValue.trim()
-                      ? 'linear-gradient(135deg,#25D366,#128C7E)'
-                      : isDarkMode ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)',
-                    boxShadow: inputValue.trim() ? '0 4px 12px rgba(37,211,102,0.3)' : 'none',
+                    background: '#00a884',
                   }}>
-                  <Send className="w-3.5 h-3.5 ml-0.5" />
+                  <Send className="w-5 h-5 ml-0.5" />
                 </button>
-              </div>
-              <div className="mt-2 text-center">
-                <span className="text-[10px] text-gray-400 dark:text-gray-500 font-medium">
-                  Test mode · Messages aren't saved
-                </span>
               </div>
             </div>
           </motion.div>
