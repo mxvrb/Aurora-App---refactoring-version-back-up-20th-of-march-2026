@@ -18,7 +18,7 @@ interface WhatsAppTestAIPanelProps {
 }
 
 // ─── Direct-DOM drag — mutates container.style.transform, zero React re-renders ─
-function useDrag(containerRef: React.RefObject<HTMLDivElement>) {
+function useDrag(containerRef: React.RefObject<HTMLDivElement | null>) {
   const offset   = useRef({ x: 0, y: 0 });
   const active   = useRef(false);
   const didDrag  = useRef(false);
@@ -59,7 +59,14 @@ function useDrag(containerRef: React.RefObject<HTMLDivElement>) {
     };
   }, [containerRef]);
 
-  return { startDrag, didDrag, nudge };
+  const resetDrag = useCallback(() => {
+    offset.current = { x: 0, y: 0 };
+    if (containerRef.current) {
+      containerRef.current.style.transform = 'translate(0px, 0px)';
+    }
+  }, [containerRef]);
+
+  return { startDrag, didDrag, nudge, resetDrag };
 }
 
 export function WhatsAppTestAIPanel({
@@ -68,52 +75,100 @@ export function WhatsAppTestAIPanel({
   isDarkMode,
 }: WhatsAppTestAIPanelProps) {
   const [isHovered,   setIsHovered]   = useState(false);
-  const [isMinimized, setIsMinimized] = useState(false);
+  const [isMinimizedToCorner, setIsMinimizedToCorner] = useState(false);
   const [messages,    setMessages]    = useState<{ role: 'user' | 'ai'; text: string }[]>([]);
   const [inputValue,  setInputValue]  = useState('');
+  const [isThinking,  setIsThinking]  = useState(false);
+  const [panelSize,   setPanelSize]   = useState({ width: 390, height: 620 });
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const MIN_W = 320;
+  const MAX_W = 600;
+  const MIN_H = 400;
+  const MAX_H = 850;
 
   // Single container that is ALWAYS mounted — drag moves this, children ride along
   const containerRef = useRef<HTMLDivElement>(null);
-  const { startDrag, didDrag, nudge } = useDrag(containerRef);
+  const { startDrag, didDrag, nudge, resetDrag } = useDrag(containerRef);
+
+  // Resize handler
+  const startResize = useCallback((e: React.MouseEvent, direction: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const startX = e.clientX;
+    const startY = e.clientY;
+    const startW = panelSize.width;
+    const startH = panelSize.height;
+
+    const onMouseMove = (moveEvent: MouseEvent) => {
+      let newW = startW;
+      let newH = startH;
+
+      if (direction.includes('right')) {
+        newW = startW + (moveEvent.clientX - startX);
+      } else if (direction.includes('left')) {
+        newW = startW - (moveEvent.clientX - startX);
+      }
+
+      if (direction.includes('bottom')) {
+        newH = startH + (moveEvent.clientY - startY);
+      } else if (direction.includes('top')) {
+        newH = startH - (moveEvent.clientY - startY);
+      }
+
+      setPanelSize({
+        width: Math.max(MIN_W, Math.min(MAX_W, newW)),
+        height: Math.max(MIN_H, Math.min(MAX_H, newH))
+      });
+    };
+
+    const onMouseUp = () => {
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  }, [panelSize]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+  }, [messages, isThinking]);
 
   const handleOpen = () => {
     if (didDrag.current) return;
 
     // ── Clamp so the panel never opens above the viewport ──────────────────
-    // Panel is 560px tall, anchored at container.bottom + 48px (3rem).
-    // Minimum rect.bottom needed = PANEL_HEIGHT + MARGIN - REM_OFFSET
     if (containerRef.current) {
       const rect        = containerRef.current.getBoundingClientRect();
-      const PANEL_HEIGHT = 560;
+      const PANEL_HEIGHT = panelSize.height;
       const MARGIN       = 16;   // px from top of viewport
       const REM_OFFSET   = 48;   // 3rem in px
-      // panelTop (from viewport top) = rect.bottom + REM_OFFSET - PANEL_HEIGHT
       const panelTop = rect.bottom + REM_OFFSET - PANEL_HEIGHT;
       if (panelTop < MARGIN) {
-        // Push container DOWN so the panel top lands at MARGIN
         nudge(MARGIN - panelTop);
       }
     }
 
-    setIsMinimized(false);
+    setIsMinimizedToCorner(false);
     setIsTestAIPanelOpen(true);
   };
-  const handleClose    = () => { setIsTestAIPanelOpen(false); setIsMinimized(false); };
-  const handleMinimize = () => setIsMinimized(v => !v);
+  const handleClose    = () => { setIsTestAIPanelOpen(false); setIsMinimizedToCorner(false); };
+  const handleMinimize = () => { setIsTestAIPanelOpen(false); setIsMinimizedToCorner(true); resetDrag(); };
+  const handlePromoteToBall = () => { setIsMinimizedToCorner(false); setIsTestAIPanelOpen(false); resetDrag(); };
 
   const handleSend = () => {
-    if (!inputValue.trim()) return;
+    if (!inputValue.trim() || isThinking) return;
     const txt = inputValue.trim();
     setMessages(p => [...p, { role: 'user', text: txt }]);
     setInputValue('');
+    setIsThinking(true);
+    
     setTimeout(() => {
+      setIsThinking(false);
       setMessages(p => [...p, { role: 'ai', text: `Thanks for testing! AI response to: "${txt}"` }]);
-    }, 1200);
+    }, 2000);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -158,9 +213,9 @@ export function WhatsAppTestAIPanel({
       }}
     >
 
-      {/* ── Speech bubble — always visible when panel is closed ── */}
+      {/* ── Speech bubble — only visible when in ball form ── */}
       <AnimatePresence>
-        {!isTestAIPanelOpen && (
+        {!isTestAIPanelOpen && !isMinimizedToCorner && (
           <motion.div
             key="tooltip"
             initial={{ opacity: 0, scale: 0.88, y: 6 }}
@@ -231,9 +286,9 @@ export function WhatsAppTestAIPanel({
         )}
       </AnimatePresence>
 
-      {/* ── Connector dots — always visible when panel is closed ── */}
+      {/* ── Connector dots — only visible when in ball form ── */}
       <AnimatePresence>
-        {!isTestAIPanelOpen && (
+        {!isTestAIPanelOpen && !isMinimizedToCorner && (
           <>
             <motion.div key="dot-lg"
               initial={{ opacity: 0, scale: 0 }} animate={{ opacity: 1, scale: 1, y: [0,-3,0] }} exit={{ opacity: 0, scale: 0 }}
@@ -270,13 +325,51 @@ export function WhatsAppTestAIPanel({
       </AnimatePresence>
 
       {/* ══════════════════════════════════════════════════════════════════════
-          MORPH TARGET — circle ↔ pill ↔ full panel, all share layoutId
-          Only one is rendered at a time; Motion morphs between them.
+          MORPH TARGET — corner circle ↔ draggable ball ↔ full panel
+          All share layoutId. Only one is rendered at a time.
       ══════════════════════════════════════════════════════════════════════ */}
       <AnimatePresence>
 
-        {/* ── CIRCLE (closed) ── */}
-        {!isTestAIPanelOpen && (
+        {/* ── CORNER CIRCLE (stuck in corner, small) ── */}
+        {isMinimizedToCorner && !isTestAIPanelOpen && (
+          <motion.button
+            key="corner-circle"
+            layoutId="ai-morph"
+            onClick={handlePromoteToBall}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            whileHover={{ scale: 1.15 }}
+            whileTap={{ scale: 0.9 }}
+            transition={{ layout: { duration: 0.45, ease: [0.23, 1, 0.32, 1] } }}
+            style={{
+              position:       'absolute',
+              bottom:         'calc(-5rem + 20px)', // Perfect bottom alignment
+              right:          'calc(-5rem + 20px)', // Equal gap to right edge as bottom gap
+              width:          44,
+              height:         44,
+              borderRadius:   '50%',
+              border:         0,
+              outline:        'none',
+              cursor:         'pointer',
+              pointerEvents:  'auto',
+              background:     'linear-gradient(145deg,#25D366 0%,#128C7E 50%,#075E54 100%)',
+              display:        'flex',
+              alignItems:     'center',
+              justifyContent: 'center',
+              overflow:       'hidden',
+              zIndex:         10000,
+            }}
+          >
+            <div className="w-[28px] h-[28px] relative z-10 flex items-center justify-center" style={{ '--fill-0': 'white' } as React.CSSProperties}>
+              <div style={{ width: 12, height: 12, transform: 'scale(2.5)', transformOrigin: 'center' }}>
+                <RobotExpandedOpt />
+              </div>
+            </div>
+          </motion.button>
+        )}
+
+        {/* ── DRAGGABLE BALL (closed) ── */}
+        {!isTestAIPanelOpen && !isMinimizedToCorner && (
           <motion.button
             key="circle"
             layoutId="ai-morph"
@@ -322,55 +415,8 @@ export function WhatsAppTestAIPanel({
           </motion.button>
         )}
 
-        {/* ── MINI PILL (open + minimized) ── */}
-        {isTestAIPanelOpen && isMinimized && (
-          <motion.div
-            key="mini-pill"
-            layoutId="ai-morph"
-            className="flex items-center gap-2 px-4"
-            transition={{ layout: { duration: 0.42, ease: [0.23, 1, 0.32, 1] } }}
-            style={{
-              position:      'absolute',
-              bottom:        PANEL_OFFSET,
-              right:         PANEL_OFFSET,
-              width:         260,
-              height:        52,
-              borderRadius:  26,
-              cursor:        'grab',
-              pointerEvents: 'auto',
-              ...glass,
-            }}
-            onMouseDown={startDrag}
-          >
-            <div className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center"
-              style={{ background: 'linear-gradient(135deg,#25D366,#128C7E)' }}>
-              <Bot className="w-4 h-4 text-white" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-xs font-semibold truncate" style={{ color: isDarkMode ? '#e5e7eb' : '#065f46' }}>
-                AI Playground
-              </p>
-              <p className="text-[10px] truncate" style={{ color: isDarkMode ? '#6b7280' : '#9ca3af' }}>
-                Test mode · {messages.length} msg{messages.length !== 1 ? 's' : ''}
-              </p>
-            </div>
-            <div className="flex items-center gap-1 flex-shrink-0" onMouseDown={e => e.stopPropagation()}>
-              <button onClick={handleMinimize}
-                className="w-7 h-7 rounded-full flex items-center justify-center cursor-pointer"
-                style={{ background: isDarkMode ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.05)' }}>
-                <Maximize2 className="w-3 h-3" style={{ color: isDarkMode ? '#9ca3af' : '#6b7280' }} />
-              </button>
-              <button onClick={handleClose}
-                className="w-7 h-7 rounded-full flex items-center justify-center cursor-pointer"
-                style={{ background: isDarkMode ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.05)' }}>
-                <X className="w-3 h-3" style={{ color: isDarkMode ? '#9ca3af' : '#6b7280' }} />
-              </button>
-            </div>
-          </motion.div>
-        )}
-
-        {/* ── FULL PANEL (open + not minimized) ── */}
-        {isTestAIPanelOpen && !isMinimized && (
+        {/* ── FULL PANEL (open) ── */}
+        {isTestAIPanelOpen && (
           <motion.div
             key="full-panel"
             layoutId="ai-morph"
@@ -380,8 +426,8 @@ export function WhatsAppTestAIPanel({
               position:      'absolute',
               bottom:        PANEL_OFFSET,
               right:         PANEL_OFFSET,
-              width:         390,
-              height:        620,
+              width:         panelSize.width,
+              height:        panelSize.height,
               maxHeight:     'calc(100vh - 80px)',
               maxWidth:      'calc(100vw - 32px)',
               borderRadius:  16,
@@ -391,6 +437,36 @@ export function WhatsAppTestAIPanel({
               boxShadow:     isDarkMode ? '0 16px 40px rgba(0,0,0,0.5)' : '0 16px 40px rgba(0,0,0,0.2)',
             }}
           >
+            {/* Edge Resize Handles */}
+            <div className="absolute top-0 left-0 w-full h-[6px] cursor-ns-resize z-[60]" onMouseDown={e => startResize(e, 'top')} />
+            <div className="absolute bottom-0 left-0 w-full h-[6px] cursor-ns-resize z-[60]" onMouseDown={e => startResize(e, 'bottom')} />
+            <div className="absolute top-0 left-0 w-[6px] h-full cursor-ew-resize z-[60]" onMouseDown={e => startResize(e, 'left')} />
+            <div className="absolute top-0 right-0 w-[6px] h-full cursor-ew-resize z-[60]" onMouseDown={e => startResize(e, 'right')} />
+            
+            {/* Corner Resize Handles */}
+            <div className="absolute top-0 left-0 w-3 h-3 cursor-nwse-resize z-[70]" onMouseDown={e => startResize(e, 'top-left')} />
+            <div className="absolute top-0 right-0 w-3 h-3 cursor-nesw-resize z-[70]" onMouseDown={e => startResize(e, 'top-right')} />
+            <div className="absolute bottom-0 left-0 w-3 h-3 cursor-nesw-resize z-[70]" onMouseDown={e => startResize(e, 'bottom-left')} />
+            
+            {/* Retro 6-dot Triangle Resize Handle (Bottom Right) */}
+            <div 
+              className="absolute bottom-1 right-1 w-5 h-5 cursor-nwse-resize z-[80] flex flex-col items-end justify-end gap-[3px] pr-[2px] pb-[2px] opacity-40 hover:opacity-100 transition-opacity"
+              onMouseDown={e => startResize(e, 'bottom-right')}
+            >
+              <div className="flex gap-[3px]">
+                <div className="w-[3px] h-[3px] rounded-full bg-gray-500"></div>
+              </div>
+              <div className="flex gap-[3px]">
+                <div className="w-[3px] h-[3px] rounded-full bg-gray-500"></div>
+                <div className="w-[3px] h-[3px] rounded-full bg-gray-500"></div>
+              </div>
+              <div className="flex gap-[3px]">
+                <div className="w-[3px] h-[3px] rounded-full bg-gray-500"></div>
+                <div className="w-[3px] h-[3px] rounded-full bg-gray-500"></div>
+                <div className="w-[3px] h-[3px] rounded-full bg-gray-500"></div>
+              </div>
+            </div>
+
             {/* Header — drag the panel from here */}
             <div
               onMouseDown={startDrag}
@@ -408,8 +484,26 @@ export function WhatsAppTestAIPanel({
                   </div>
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-white font-medium text-[16px] leading-[21px]">AI Assistant</span>
-                  <span className="text-white/80 text-[13px] leading-[20px]">online</span>
+                  <span className="text-white font-medium text-[16px] leading-[21px]">Test your AI</span>
+                  <span className="text-white/80 text-[13px] leading-[20px] h-[20px] flex items-center">
+                    {isThinking ? (
+                      <span className="flex items-center">
+                        Thinking
+                        <motion.span
+                          animate={{ opacity: [0, 1, 0] }}
+                          transition={{ duration: 1.2, repeat: Infinity, times: [0, 0.5, 1], delay: 0 }}
+                        >.</motion.span>
+                        <motion.span
+                          animate={{ opacity: [0, 1, 0] }}
+                          transition={{ duration: 1.2, repeat: Infinity, times: [0, 0.5, 1], delay: 0.2 }}
+                        >.</motion.span>
+                        <motion.span
+                          animate={{ opacity: [0, 1, 0] }}
+                          transition={{ duration: 1.2, repeat: Infinity, times: [0, 0.5, 1], delay: 0.4 }}
+                        >.</motion.span>
+                      </span>
+                    ) : 'Start Typing'}
+                  </span>
                 </div>
               </div>
 
@@ -428,7 +522,7 @@ export function WhatsAppTestAIPanel({
 
             {/* Chat area */}
             <div
-              className="flex-1 overflow-y-auto px-[5%] py-4 space-y-2 relative"
+              className="flex-1 overflow-y-auto px-[4%] py-4 space-y-1 relative"
               style={{
                 scrollbarWidth: 'thin',
                 cursor: 'default',
@@ -450,7 +544,7 @@ export function WhatsAppTestAIPanel({
               <div className="relative z-10 flex flex-col h-full">
                 {messages.length === 0 ? (
                   <div className="flex flex-col items-center justify-center pt-2 space-y-4 flex-1">
-                    <div className="text-[12.5px] px-3 py-1.5 rounded-md text-center max-w-[90%] shadow-sm leading-[18px]"
+                    <div className="text-[12.5px] px-4 py-2 rounded-md text-center max-w-[90%] shadow-sm leading-[18px]"
                       style={{
                         background: isDarkMode ? '#182229' : '#FFEECD',
                         color: isDarkMode ? '#8696A0' : '#54656F',
@@ -466,7 +560,7 @@ export function WhatsAppTestAIPanel({
                       
                       return (
                         <div key={i} className={`flex ${isUser ? 'justify-end' : 'justify-start'} relative group`}>
-                          <div className="relative max-w-[85%] min-w-[80px] px-[9px] pt-[6px] pb-[4px] text-[14.2px] leading-[19px] shadow-[0_1px_0.5px_rgba(11,20,26,.13)]"
+                          <div className="relative max-w-[85%] min-w-[70px] px-[9px] pt-[6px] pb-[4px] text-[14.2px] leading-[19px] shadow-[0_1px_0.5px_rgba(11,20,26,.13)]"
                             style={{
                               borderRadius: isFirstInSequence 
                                 ? (isUser ? '8px 0 8px 8px' : '0 8px 8px 8px')
@@ -500,9 +594,9 @@ export function WhatsAppTestAIPanel({
                             )}
                             
                             <div className="flex flex-wrap items-end justify-end">
-                              <div className="flex-1 break-words min-w-[60px] pb-1 pr-4">
+                              <span className="flex-1 break-words pb-1 pr-2">
                                 {msg.text}
-                              </div>
+                              </span>
                                 
                               <div className="flex items-center gap-1 text-[11px] leading-[15px] select-none h-[15px] mb-[2px] ml-auto shrink-0"
                                 style={{ 
@@ -520,6 +614,20 @@ export function WhatsAppTestAIPanel({
                         </div>
                       );
                     })}
+                    {isThinking && (
+                      <div className="flex justify-start relative group">
+                        <div className="relative max-w-[85%] min-w-[70px] px-[9px] pt-[6px] pb-[8px] text-[14.2px] leading-[19px] shadow-[0_1px_0.5px_rgba(11,20,26,.13)] rounded-[0_8px_8px_8px] bg-white dark:bg-[#202c33] text-[#111b21] dark:text-[#e9edef] mt-[6px]">
+                          <svg viewBox="0 0 8 13" width="8" height="13" className="absolute top-0 left-[-8px] text-white dark:text-[#202c33]">
+                            <path fill="currentColor" d="M1.533 2.568L8 11.193V0H2.812C1.042 0 .474 1.156 1.533 2.568z"/>
+                          </svg>
+                          <div className="flex gap-1.5 py-1 px-1">
+                            <motion.div animate={{ scale: [1, 1.3, 1] }} transition={{ repeat: Infinity, duration: 0.8, delay: 0 }} className="w-1.5 h-1.5 rounded-full bg-gray-400" />
+                            <motion.div animate={{ scale: [1, 1.3, 1] }} transition={{ repeat: Infinity, duration: 0.8, delay: 0.2 }} className="w-1.5 h-1.5 rounded-full bg-gray-400" />
+                            <motion.div animate={{ scale: [1, 1.3, 1] }} transition={{ repeat: Infinity, duration: 0.8, delay: 0.4 }} className="w-1.5 h-1.5 rounded-full bg-gray-400" />
+                          </div>
+                        </div>
+                      </div>
+                    )}
                     <div ref={messagesEndRef} />
                   </div>
                 )}
@@ -567,7 +675,7 @@ export function WhatsAppTestAIPanel({
                 </div>
                 <button
                   onClick={handleSend}
-                  disabled={!inputValue.trim()}
+                  disabled={!inputValue.trim() || isThinking}
                   className="w-10 h-10 rounded-full flex flex-shrink-0 items-center justify-center text-white disabled:opacity-60 transition-all cursor-pointer shadow-sm mb-[4px]"
                   style={{
                     background: '#00a884',
