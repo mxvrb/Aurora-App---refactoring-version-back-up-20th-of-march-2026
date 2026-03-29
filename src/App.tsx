@@ -16430,18 +16430,26 @@ Would you like me to help you create or configure any of these elements? Just as
                       transition={{ duration: 0.45, ease: [0.23, 1, 0.32, 1] }}
                     >
                       <motion.div layout className="flex items-center gap-3 px-5 py-3">
-                        <h3 className="text-base font-medium text-gray-900 dark:text-gray-100 whitespace-nowrap">
+                        <h3 className="text-base font-medium text-gray-900 dark:text-gray-100 whitespace-nowrap flex-shrink-0">
                           {savedBusinessHours ? 'Opening Times' : 'Add Opening Times'}
                         </h3>
 
-                        {/* Inline status */}
-                        <span className="text-xs text-gray-400 dark:text-gray-500 whitespace-nowrap hidden sm:inline-block">
-                          {savedBusinessHours && Object.values(savedBusinessHours).some(hours => hours.enabled)
-                            ? 'Configured'
-                            : savedBusinessHours && Object.values(savedBusinessHours).every(hours => !hours.enabled)
-                              ? 'Closed all days'
-                              : 'Not configured'}
-                        </span>
+                        {/* Always show status text + conditional alert, same layout */}
+                        <div className="w-80 flex items-center gap-4 ml-auto mr-6">
+                          <span className="text-xs text-gray-400 dark:text-gray-500 whitespace-nowrap hidden sm:inline-block">
+                            {savedBusinessHours && Object.values(savedBusinessHours).some(hours => hours.enabled)
+                              ? 'Configured'
+                              : savedBusinessHours && Object.values(savedBusinessHours).every(hours => !hours.enabled)
+                                ? 'Closed all days'
+                                : 'Not configured'}
+                          </span>
+                          {!savedBusinessHours && (
+                            <div className="flex items-center gap-1 px-2 py-0.5 bg-yellow-100/80 dark:bg-yellow-900/50 border border-yellow-200/50 dark:border-yellow-800/50 rounded-full text-xs text-yellow-800 dark:text-yellow-200 whitespace-nowrap flex-shrink-0">
+                              <Info className="w-3 h-3 flex-shrink-0" />
+                              <span>Set operating hours to guide AI availability</span>
+                            </div>
+                          )}
+                        </div>
 
                         {/* Spacer */}
                         <div className="flex-1" />
@@ -16548,14 +16556,7 @@ Would you like me to help you create or configure any of these elements? Just as
                         )}
                       </AnimatePresence>
 
-                      {/* Not configured hint */}
-                      {!(savedBusinessHours && Object.values(savedBusinessHours).some(hours => hours.enabled)) && (
-                        <motion.div layout className="px-5 pb-3 -mt-1">
-                          <p className="text-[11px] text-gray-400 dark:text-gray-500">
-                            Set operating hours to guide AI availability
-                          </p>
-                        </motion.div>
-                      )}
+                      {/* No duplicate hint - already shown inline */}
                     </motion.div>
                   </div>
                 </div>
