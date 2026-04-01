@@ -75,6 +75,7 @@ import { Popover, PopoverContent, PopoverTrigger } from './components/ui/popover
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from './components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from './components/ui/alert-dialog';
 import { Switch } from './components/ui/switch';
+import { BusinessHoursDisplay } from './components/BusinessHoursDisplay';
 import { Checkbox } from './components/ui/checkbox';
 import { Power, Mail, Lock, ArrowRight, ArrowLeft, User, Building, HelpCircle, Check, ChevronsUpDown, Info, Edit3, X, Moon, Sun, MessageCircle, Globe, Facebook, Instagram, BarChart3, Upload, Phone, ExternalLink, Crown, Plus, Minus, Settings, Settings2, Bot, MessageSquare, FileText, Edit, ChevronRight, ChevronLeft, Clock, ChevronDown, Calendar, RotateCcw, Eye, Users, Bell, BookOpen, Star, CreditCard, Palette, Filter, Send, Sparkles, History, SplitSquareHorizontal, Search, Loader2, XCircle, Paperclip, File, UserPlus, FolderOpen, Camera, Ban, UserMinus, Key, Smile, Type, MapPin, Cpu, HeartPlus, ThumbsUp, MessageCircleQuestion, Package, Navigation, MapPinned, PenTool, Trash2, AlignJustify, List, Mail as MailIcon, WandSparkles, Blend, ChevronUp, Scroll, CalendarRange, CalendarDays, Database, ShieldAlert, ShieldCheck, MessageSquareText, MessageCircleReply, CalendarFold, PlaneTakeoff, Rocket, Sticker, PencilLine, EyeOff, Network } from 'lucide-react';
 import { EnterpriseBadge } from './components/EnterpriseBadge';
@@ -527,7 +528,7 @@ export default function App() {
     const appPages: AuthStep[] = ['dashboard', 'allChats', 'whatsapp', 'analytics', 'instagram', 'website', 'facebook', 'mail', 'white-label'];
     if (appPages.includes(currentStep)) {
       try {
-        offlineStorage.setItem('acesai_last_page', currentStep);
+        localStorage.setItem('acesai_last_page', currentStep);
         console.log('✓ Saved last visited page:', currentStep);
       } catch (error) {
         console.log('Could not save last visited page:', error);
@@ -1101,6 +1102,7 @@ export default function App() {
   const [staffMembers, setStaffMembers] = useState<StaffMember[]>([]);
   const [isAddStaffModalOpen, setIsAddStaffModalOpen] = useState(false);
   const [editingStaffMember, setEditingStaffMember] = useState<StaffMember | null>(null);
+  const [isOpeningTimesBarCollapsed, setOpeningTimesBarCollapsed] = useState(false);
 
   // Dialog states for Main Options
   const [showConfigureNameDialog, setShowConfigureNameDialog] = useState(false);
@@ -1312,24 +1314,26 @@ export default function App() {
   const [isFirstTimeWhatsappAnimation, setIsFirstTimeWhatsappAnimation] = useState(false);
 
   // WhatsApp AI Chat vs Manual Edit mode
+  // The app decides whether to enter the user into 'edit manually' or 'edit with ai' page on reload
   const [whatsappMode, setWhatsappMode] = useState<'ai' | 'manual'>(() => {
     try {
       // Check if Chat with AI is disabled in localStorage
-      const savedEnabled = offlineStorage.getItem('acesai_chat_with_ai_enabled');
-      if (savedEnabled !== null && savedEnabled === false) {
-        return 'manual'; // Start in manual mode if AI is disabled
+      const savedEnabled = localStorage.getItem('acesai_chat_with_ai_enabled');
+      if (savedEnabled === 'false' || (savedEnabled !== null && JSON.parse(savedEnabled) === false)) {
+        return 'manual'; // Start in edit manually mode if AI is disabled
       }
-      return 'ai';
+      return 'ai'; // Enter the user into edit with ai page if left on
     } catch {
       return 'ai';
     }
-  }); // Default to AI mode (unless disabled)
+  });
 
-  // Chat with AI toggle state - controls whether the Chat with AI page is accessible
-  // Load from localStorage, default to enabled if not found
-  const [isChatWithAiEnabled, setIsChatWithAiEnabled] = useState(() => {
+  // Chat with AI toggle state - tracks whether the toggle in the radial menu is left on or off
+  const [isChatWithAiEnabled, setIsChatWithAiEnabled] = useState<boolean>(() => {
     try {
-      const saved = offlineStorage.getItem('acesai_chat_with_ai_enabled');
+      const saved = localStorage.getItem('acesai_chat_with_ai_enabled');
+      if (saved === 'false') return false;
+      if (saved === 'true') return true;
       return saved !== null ? JSON.parse(saved) : true; // Default to enabled
     } catch {
       return true;
@@ -3816,13 +3820,18 @@ export default function App() {
     }
   }, [currentStep, pageToNavigateAfterLoad]);
 
-  // Persist Chat with AI toggle state to localStorage
+  // Example of how the radial toggle logic updates LocalStorage permanently
   useEffect(() => {
     try {
-      offlineStorage.setItem('acesai_chat_with_ai_enabled', isChatWithAiEnabled);
-      console.log('✓ Saved Chat with AI toggle state:', isChatWithAiEnabled);
-    } catch (error) {
-      console.log('Could not save Chat with AI toggle state:', error);
+      localStorage.setItem('acesai_chat_with_ai_enabled', JSON.stringify(isChatWithAiEnabled));
+      // Additionally change the mode live
+      if (!isChatWithAiEnabled) {
+        setWhatsappMode('manual');
+      } else {
+        setWhatsappMode('ai');
+      }
+    } catch (e) {
+      console.error('Failed to save AI preferences', e);
     }
   }, [isChatWithAiEnabled]);
 
@@ -4924,7 +4933,7 @@ export default function App() {
           let restoredPage: AuthStep | null = null;
           try {
             const savedPage = localStorage.getItem('acesai_last_page') as AuthStep | null;
-            const appPages: AuthStep[] = ['dashboard', 'allChats', 'whatsapp', 'analytics', 'instagram', 'website', 'facebook', 'mail'];
+            const appPages: AuthStep[] = ['dashboard', 'allChats', 'whatsapp', 'analytics', 'instagram', 'website', 'facebook', 'mail', 'white-label'];
             if (savedPage && appPages.includes(savedPage)) {
               restoredPage = savedPage;
               console.log('✓ Found saved page in localStorage:', restoredPage);
@@ -4943,13 +4952,10 @@ export default function App() {
           }
 
           if (hasLoggedInBefore && restoredPage) {
-            // Returning user with saved page - load to dashboard first, then navigate to saved page for animations
-            console.log('✓ RETURNING USER - Will navigate to saved page after load:', restoredPage);
+            console.log('✓ RETURNING USER - Going directly to saved page:', restoredPage);
             clearAllTimeouts();
-            setPageToNavigateAfterLoad(restoredPage);
-            setCurrentStep('dashboard');
+            setCurrentStep(restoredPage);
           } else if (hasLoggedInBefore) {
-            // Returning user but no saved page - go to dashboard, skip welcome
             console.log('✓ RETURNING USER - Going directly to dashboard (no saved page)');
             clearAllTimeouts();
             setCurrentStep('dashboard');
@@ -16422,164 +16428,145 @@ Would you like me to help you create or configure any of these elements? Just as
                   </div>
 
                   {/* Opening Times Section - Floating Pill */}
-                  <div className="fixed bottom-6 left-0 w-full z-40 flex justify-center pointer-events-none px-4">
-                    <motion.div
-                      layout
-                      ref={openingTimesCardRef}
-                      className="bg-white/90 dark:bg-[#1A2333]/90 backdrop-blur-2xl border border-gray-200/80 dark:border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.08)] rounded-[28px] overflow-hidden pointer-events-auto flex flex-col max-w-[700px] w-full"
-                      transition={{ duration: 0.45, ease: [0.23, 1, 0.32, 1] }}
-                    >
-                      <motion.div layout className="flex items-center gap-3 px-5 py-3">
-                        <h3 className="text-base font-medium text-gray-900 dark:text-gray-100 whitespace-nowrap flex-shrink-0">
-                          {savedBusinessHours ? 'Opening Times' : 'Add Opening Times'}
-                        </h3>
-
-                        {/* Always show status text + conditional alert, same layout */}
-                        <div className="w-80 flex items-center gap-4 ml-auto mr-6">
-                          <span className="text-xs text-gray-400 dark:text-gray-500 whitespace-nowrap hidden sm:inline-block">
-                            {savedBusinessHours && Object.values(savedBusinessHours).some(hours => hours.enabled)
-                              ? 'Configured'
-                              : savedBusinessHours && Object.values(savedBusinessHours).every(hours => !hours.enabled)
-                                ? 'Closed all days'
-                                : 'Not configured'}
-                          </span>
-                          {!savedBusinessHours && (
-                            <div className="flex items-center gap-1 px-2 py-0.5 bg-yellow-100/80 dark:bg-yellow-900/50 border border-yellow-200/50 dark:border-yellow-800/50 rounded-full text-xs text-yellow-800 dark:text-yellow-200 whitespace-nowrap flex-shrink-0">
-                              <Info className="w-3 h-3 flex-shrink-0" />
-                              <span>Set operating hours to guide AI availability</span>
-                            </div>
-                          )}
-                        </div>
-
-                        {/* Spacer */}
-                        <div className="flex-1" />
-
-                        {/* Compact action buttons */}
-                        <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => setShowBusinessHours(true)}
-                            className="flex items-center gap-2 px-3 py-1.5 bg-gray-100/80 dark:bg-gray-700/50 rounded-full border border-gray-200/50 dark:border-gray-600/50 hover:bg-gray-200/80 dark:hover:bg-gray-600/60 transition-all cursor-pointer"
-                          >
-                            <Clock className="w-4 h-4 text-gray-600 dark:text-gray-300" />
-                            <span className="text-sm font-medium text-gray-700 dark:text-gray-200 hidden md:inline">Configure</span>
-                          </button>
-                          <button
-                            onClick={() => setShowCalendarModal(true)}
-                            className="flex items-center gap-2 px-3 py-1.5 bg-gray-100/80 dark:bg-gray-700/50 rounded-full border border-gray-200/50 dark:border-gray-600/50 hover:bg-gray-200/80 dark:hover:bg-gray-600/60 transition-all cursor-pointer"
-                          >
-                            <Calendar className="w-4 h-4 text-gray-600 dark:text-gray-300" />
-                            <span className="text-sm font-medium text-gray-700 dark:text-gray-200 hidden md:inline">Calendar</span>
-                          </button>
-                          {/* View/Hide toggle */}
-                          {savedBusinessHours && Object.values(savedBusinessHours).some(hours => hours.enabled) && (
+                  <div className="fixed bottom-6 left-0 w-full z-20 flex justify-center pointer-events-none px-4">
+                    <AnimatePresence>
+                      {!isOpeningTimesBarCollapsed && (
+                        <motion.div
+                          layout
+                          ref={openingTimesCardRef}
+                          className="bg-white/90 dark:bg-[#1A2333]/90 backdrop-blur-2xl border border-gray-200/80 dark:border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.08)] rounded-[28px] overflow-hidden pointer-events-auto flex flex-col max-w-[950px] w-full"
+                          transition={{ duration: 0.45, ease: [0.23, 1, 0.32, 1] }}
+                          initial={{ x: '-100%' }}
+                          animate={{ x: 0 }}
+                          exit={{ x: '-200%' }}
+                        >
+                          <motion.div layout className="flex items-center gap-3 px-5 py-3">
                             <button
-                              onClick={() => setShowOpeningTimesDetails(!showOpeningTimesDetails)}
-                              className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100/80 dark:bg-gray-700/50 hover:bg-gray-200/80 dark:hover:bg-gray-600/60 transition-all cursor-pointer border border-gray-200/50 dark:border-gray-600/50"
+                              onClick={() => setOpeningTimesBarCollapsed(true)}
+                              className="p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
                             >
-                              <motion.div
-                                initial={false}
-                                animate={{ rotate: showOpeningTimesDetails ? 180 : 0 }}
-                                transition={{ duration: 0.3 }}
-                              >
-                                <ChevronUp className="w-4 h-4 text-gray-600 dark:text-gray-300" />
-                              </motion.div>
+                              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                              </svg>
                             </button>
-                          )}
-                        </div>
-                      </motion.div>
+                            <h3 className="text-base font-medium text-gray-900 dark:text-gray-100 whitespace-nowrap flex-shrink-0">
+                              {savedBusinessHours ? 'Opening Times' : 'Add Opening Times'}
+                            </h3>
 
-                      {/* Expandable details */}
-                      <AnimatePresence initial={false}>
-                        {showOpeningTimesDetails && savedBusinessHours && Object.values(savedBusinessHours).some(hours => hours.enabled) && (
-                          <motion.div
-                            key="opening-times-details"
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: 'auto', opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            transition={{ duration: 0.45, ease: [0.23, 1, 0.32, 1] }}
-                            className="overflow-hidden"
-                          >
-                            <div className="px-5 pb-4 pt-2 border-t border-gray-100/50 dark:border-white/5">
-                              <div className="flex gap-2 w-full overflow-x-auto pb-2 [scrollbar-width:'none'] [&::-webkit-scrollbar]:hidden">
-                                {(() => {
-                                  const today = new Date();
-                                  const currentDayOfWeek = today.getDay();
-                                  const distanceToMonday = currentDayOfWeek === 0 ? 6 : currentDayOfWeek - 1;
-                                  const monday = new Date(today);
-                                  monday.setDate(today.getDate() - distanceToMonday);
+                            {/* Always show status text + conditional alert, same layout */}
+                            <div className="flex-1 flex items-center gap-4 ml-auto mr-2">
+                              <span className="text-xs text-gray-400 dark:text-gray-500 whitespace-nowrap hidden sm:inline-block">
+                                {savedBusinessHours && Object.values(savedBusinessHours).some(hours => hours.enabled)
+                                  ? 'Configured'
+                                  : savedBusinessHours && Object.values(savedBusinessHours).every(hours => !hours.enabled)
+                                    ? 'Closed all days'
+                                    : 'Not configured'}
+                              </span>
+                              {!savedBusinessHours && (
+                                <div className="flex items-center gap-1 px-2 py-0.5 bg-yellow-100/80 dark:bg-yellow-900/50 border border-yellow-200/50 dark:border-yellow-800/50 rounded-full text-xs text-yellow-800 dark:text-yellow-200 whitespace-nowrap flex-shrink-0">
+                                  <Info className="w-3 h-3 flex-shrink-0" />
+                                  <span>Set operating hours to guide AI availability</span>
+                                </div>
+                              )}
+                            </div>
 
-                                  const dayNamesFull = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-                                  const dayNamesShort = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
+                            {/* Spacer */}
+                            <div className="flex-1" />
 
-                                  // Map 0-6 to actual day indices starting from Monday (1, 2, 3, 4, 5, 6, 0)
-                                  const getDayIndexForMondayStart = (index: number) => {
-                                    return index === 6 ? 0 : index + 1;
-                                  };
-
-                                  return Array.from({ length: 7 }).map((_, i) => {
-                                    const date = new Date(monday);
-                                    date.setDate(monday.getDate() + i);
-                                    const isToday = date.toDateString() === today.toDateString();
-
-                                    const dayIndex = date.getDay();
-                                    const fullDayName = dayNamesFull[dayIndex];
-                                    const shortDayName = dayNamesShort[i];
-                                    const dayOfMonth = date.getDate();
-
-                                    const isHoliday = holidayDays.some(hDate => new Date(hDate).toDateString() === date.toDateString());
-
-                                    const hours = (savedBusinessHours as any)?.[fullDayName];
-                                    const isClosed = !hours?.enabled || isHoliday;
-
-                                    return (
-                                      <div key={fullDayName} className={`flex-1 min-w-[76px] flex flex-col rounded-[14px] overflow-hidden bg-white dark:bg-gray-900 border ${isToday ? 'border-blue-400 dark:border-blue-500 shadow-sm' : 'border-gray-200/80 dark:border-gray-700 shadow-sm'}`}>
-                                        {/* Top part */}
-                                        <div className={`py-2 px-1.5 flex flex-col items-center justify-center relative ${isToday ? 'bg-blue-500 text-white' : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'}`}>
-                                          <div className="flex items-center justify-center w-full relative">
-                                            <span className="text-[12px] font-medium opacity-80">{shortDayName}</span>
-                                          </div>
-                                          <span className="text-2xl font-semibold leading-tight mt-0.5">{dayOfMonth}</span>
-                                        </div>
-                                        {/* Bottom part */}
-                                        <div className={`py-2.5 px-1 text-center flex-1 flex flex-col items-center justify-center`}>
-                                          <span className={`text-[11px] font-semibold whitespace-nowrap ${isClosed ? 'text-gray-500 dark:text-gray-400' : 'text-gray-800 dark:text-gray-200'}`}>
-                                            {isClosed ? 'Closed' : `${hours?.start}-${hours?.end}`}
-                                          </span>
-                                        </div>
-                                      </div>
-                                    );
-                                  });
-                                })()}
-                              </div>
+                            {/* Compact action buttons */}
+                            <div className="flex items-center gap-2">
+                              <button
+                                onClick={() => setShowBusinessHours(true)}
+                                className="flex items-center gap-2 px-3 py-1.5 bg-gray-100/80 dark:bg-gray-700/50 rounded-full border border-gray-200/50 dark:border-gray-600/50 hover:bg-gray-200/80 dark:hover:bg-gray-600/60 transition-all cursor-pointer"
+                              >
+                                <Clock className="w-4 h-4 text-gray-600 dark:text-gray-300" />
+                                <span className="text-sm font-medium text-gray-700 dark:text-gray-200 hidden md:inline">Configure</span>
+                              </button>
+                              <button
+                                onClick={() => setShowCalendarModal(true)}
+                                className="flex items-center gap-2 px-3 py-1.5 bg-gray-100/80 dark:bg-gray-700/50 rounded-full border border-gray-200/50 dark:border-gray-600/50 hover:bg-gray-200/80 dark:hover:bg-gray-600/60 transition-all cursor-pointer"
+                              >
+                                <Calendar className="w-4 h-4 text-gray-600 dark:text-gray-300" />
+                                <span className="text-sm font-medium text-gray-700 dark:text-gray-200 hidden md:inline">Calendar</span>
+                              </button>
+                              {/* View/Hide toggle */}
+                              {savedBusinessHours && Object.values(savedBusinessHours).some(hours => hours.enabled) && (
+                                <button
+                                  onClick={() => setShowOpeningTimesDetails(!showOpeningTimesDetails)}
+                                  className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100/80 dark:bg-gray-700/50 hover:bg-gray-200/80 dark:hover:bg-gray-600/60 transition-all cursor-pointer border border-gray-200/50 dark:border-gray-600/50"
+                                >
+                                  <motion.div
+                                    initial={false}
+                                    animate={{ rotate: showOpeningTimesDetails ? 180 : 0 }}
+                                    transition={{ duration: 0.3 }}
+                                  >
+                                    <ChevronUp className="w-4 h-4 text-gray-600 dark:text-gray-300" />
+                                  </motion.div>
+                                </button>
+                              )}
                             </div>
                           </motion.div>
-                        )}
-                      </AnimatePresence>
 
-                      {/* No duplicate hint - already shown inline */}
-                    </motion.div>
+                          {/* Expandable details */}
+                          <AnimatePresence initial={false}>
+                            {showOpeningTimesDetails && savedBusinessHours && Object.values(savedBusinessHours).some(hours => hours.enabled) && (
+                              <motion.div
+                                key="opening-times-details"
+                                initial={{ height: 0, opacity: 0 }}
+                                animate={{ height: 'auto', opacity: 1 }}
+                                exit={{ height: 0, opacity: 0 }}
+                                transition={{ duration: 0.45, ease: [0.23, 1, 0.32, 1] }}
+                                className="overflow-hidden"
+                              >
+                                <BusinessHoursDisplay businessHours={savedBusinessHours} holidayDays={holidayDays} />
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+
+                    <AnimatePresence>
+                      {isOpeningTimesBarCollapsed && (
+                        <motion.div
+                          className="fixed bottom-8 left-24 z-[60] pointer-events-auto"
+                          initial={{ opacity: 0, scale: 0.6 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.6 }}
+                          transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                        >
+                          <motion.button
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => setOpeningTimesBarCollapsed(false)}
+                            className="p-3 bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-2xl hover:shadow-blue-500/25 hover:from-blue-600 hover:to-indigo-700 rounded-2xl backdrop-blur-xl border border-white/20 text-lg font-semibold flex items-center justify-center w-14 h-14"
+                          >
+                            <svg width="24" height="24" viewBox="0 0 34 22" fill="none" xmlns="http://www.w3.org/2000/svg" className="drop-shadow-lg">
+                              <path d="M22.5 5V11L26.5 13M14 1H6M8.5 9.5H1M12 19H4.5M32.5 11C32.5 16.5228 28.0228 21 22.5 21C16.9772 21 12.5 16.5228 12.5 11C12.5 5.47715 16.9772 1 22.5 1C28.0228 1 32.5 5.47715 32.5 11Z" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                          </motion.button>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
                 </div>
               </motion.div>
               {/* End of content wrapper */}
 
               {/* Business Hours Configuration Modal — smooth pop-up animation */}
-              {createPortal(
-                <AnimatePresence>
-                  {showBusinessHours && (
-                    <motion.div
-                      key="config-hours-backdrop"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0, transition: { duration: 0.12 } }}
-                      transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
-                      style={{ position: 'fixed', inset: 0, zIndex: 99998 }}
-                      className="bg-black/40"
-                      onClick={() => closeConfigHours()}
-                    />
-                  )}
-                  {showBusinessHours && (
-                    <motion.div
+              {showBusinessHours && createPortal(
+                <>
+                  <motion.div
+                    key="config-hours-backdrop"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.15 }}
+                    style={{ position: 'fixed', inset: 0, zIndex: 99998 }}
+                    className="bg-black/40 pointer-events-auto"
+                    onClick={() => closeConfigHours()}
+                  />
+                  <motion.div
                       key="config-hours-panel"
                       initial={{ opacity: 0, scale: 0.4 }}
                       animate={{ opacity: 1, scale: 1 }}
@@ -16711,20 +16698,19 @@ Would you like me to help you create or configure any of these elements? Just as
                           onClick={async () => {
                             const hoursToSave = { ...businessHours };
                             setSavedBusinessHours(hoursToSave);
-                            closeConfigHours();
 
-                            // Save business hours to preferences
+                            // Save business hours to preferences first
                             if (accessToken) {
-                              await saveUserPreferences(accessToken, undefined, hoursToSave, undefined);
-                              console.log('Business hours saved to preferences:', hoursToSave);
-
-                              const verifyPrefs = offlineStorage.getPreferences();
-                              if (verifyPrefs && verifyPrefs.businessHours) {
-                                console.log('Verification: Business hours found in local storage:', verifyPrefs.businessHours);
-                              } else {
-                                console.warn('Verification: Business hours NOT found in local storage after save');
+                              try {
+                                await saveUserPreferences(accessToken, undefined, hoursToSave, undefined);
+                                console.log('Business hours saved to preferences:', hoursToSave);
+                              } catch (error) {
+                                console.error('Error saving business hours:', error);
                               }
                             }
+
+                            // Close modal after saving
+                            closeConfigHours();
                           }}
                           className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2"
                         >
@@ -16732,28 +16718,24 @@ Would you like me to help you create or configure any of these elements? Just as
                         </Button>
                       </div>
                     </motion.div>
-                  )}
-                </AnimatePresence>,
+                </>,
                 document.body
               )}
 
               {/* Holiday Days Calendar Modal — smooth pop-up animation matching Configure Hours */}
-              {createPortal(
-                <AnimatePresence>
-                  {showHolidayCalendar && (
-                    <motion.div
-                      key="holiday-days-backdrop"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0, transition: { duration: 0.12 } }}
-                      transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
-                      style={{ position: 'fixed', inset: 0, zIndex: 99998 }}
-                      className="bg-black/40"
-                      onClick={() => setShowHolidayCalendar(false)}
-                    />
-                  )}
-                  {showHolidayCalendar && (
-                    <motion.div
+              {showHolidayCalendar && createPortal(
+                <>
+                  <motion.div
+                    key="holiday-days-backdrop"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0, transition: { duration: 0.12 } }}
+                    transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
+                    style={{ position: 'fixed', inset: 0, zIndex: 99998 }}
+                    className="bg-black/40 pointer-events-auto"
+                    onClick={() => setShowHolidayCalendar(false)}
+                  />
+                  <motion.div
                       key="holiday-days-panel"
                       initial={{ opacity: 0, scale: 0.4 }}
                       animate={{ opacity: 1, scale: 1 }}
@@ -16888,28 +16870,24 @@ Would you like me to help you create or configure any of these elements? Just as
                         </Button>
                       </div>
                     </motion.div>
-                  )}
-                </AnimatePresence>,
+                </>,
                 document.body
               )}
 
               {/* Calendar Modal — smooth pop-up animation matching Configure Hours */}
-              {createPortal(
-                <AnimatePresence>
-                  {showCalendarModal && (
-                    <motion.div
-                      key="calendar-modal-backdrop"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0, transition: { duration: 0.12 } }}
-                      transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
-                      style={{ position: 'fixed', inset: 0, zIndex: 99998 }}
-                      className="bg-black/40"
-                      onClick={() => setShowCalendarModal(false)}
-                    />
-                  )}
-                  {showCalendarModal && (
-                    <motion.div
+              {showCalendarModal && createPortal(
+                <>
+                  <motion.div
+                    key="calendar-modal-backdrop"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0, transition: { duration: 0.12 } }}
+                    transition={{ duration: 0.2, ease: [0.23, 1, 0.32, 1] }}
+                    style={{ position: 'fixed', inset: 0, zIndex: 99998 }}
+                    className="bg-black/40 pointer-events-auto"
+                    onClick={() => setShowCalendarModal(false)}
+                  />
+                  <motion.div
                       key="calendar-modal-panel"
                       initial={{ opacity: 0, scale: 0.4 }}
                       animate={{ opacity: 1, scale: 1 }}
@@ -17017,8 +16995,7 @@ Would you like me to help you create or configure any of these elements? Just as
                         </Button>
                       </div>
                     </motion.div>
-                  )}
-                </AnimatePresence>,
+                </>,
                 document.body
               )}
 

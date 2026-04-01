@@ -522,14 +522,25 @@ export function WhatsAppTestAIPanel({
 
             {/* Chat area */}
             <div
-              className="flex-1 overflow-y-auto px-[4%] py-4 space-y-1 relative"
+              className="flex-1 overflow-y-auto px-[4%] py-4 space-y-1 relative scrollbar-hide"
               style={{
-                scrollbarWidth: 'thin',
+                scrollbarWidth: 'none',
+                msOverflowStyle: 'none',
                 cursor: 'default',
                 userSelect: 'text',
               }}
               onMouseDown={e => e.stopPropagation()}
             >
+              <style jsx>{`
+                &::-webkit-scrollbar { width: 4px; height: 4px; }
+                &::-webkit-scrollbar-track { background: transparent; }
+                &::-webkit-scrollbar-thumb { 
+                  background: rgba(166,168,170,0.4); 
+                  border-radius: 2px; 
+                  transition: background 0.2s;
+                }
+                &:hover::-webkit-scrollbar-thumb { background: rgba(166,168,170,0.6); }
+              `}</style>
               {/* Authentic WhatsApp Doodles pattern overlay */}
               <div className="absolute inset-0 pointer-events-none" style={{
                 backgroundImage: isDarkMode 
@@ -604,9 +615,11 @@ export function WhatsAppTestAIPanel({
                                 }}>
                                 {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                 {isUser && (
-                                  <svg viewBox="0 0 16 11" width="16" height="11" className={isDarkMode ? "fill-[#53bdeb]" : "fill-[#53bdeb]"}>
-                                    <path d="M11.8 1.6L10.4 0.2C10.3 0.1 10.1 0 10 0s-0.3 0.1-0.4 0.2L5.2 4.6 3.8 3.2C3.7 3.1 3.5 3 3.4 3s-0.3 0.1-0.4 0.2L1.6 4.6c-0.2 0.2-0.2 0.5 0 0.7l2.9 2.9c0.1 0.1 0.3 0.2 0.4 0.2s0.3-0.1 0.4-0.2l6.5-6.5C12 1.9 12 1.6 11.8 1.6z M15.8 1.6L14.4 0.2C14.3 0.1 14.1 0 14 0s-0.3 0.1-0.4 0.2l-3.2 3.2 1.4 1.4 2.5-2.5C16 2.1 16 1.8 15.8 1.6z M7.8 7.2L6.4 8.6c-0.1 0.1-0.3 0.2-0.4 0.2s-0.3-0.1-0.4-0.2L5.2 8.2l1.4-1.4L7.8 7.2z"></path>
-                                  </svg>
+                                  <div className="flex -space-x-1">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#53bdeb">
+<path d="M0.410034 13.41L6.00003 19L7.41003 17.58L1.83003 12L0.410034 13.41ZM22.24 5.57996L11.66 16.17L7.50003 12L6.07003 13.41L11.66 19L23.66 6.99996L22.24 5.57996ZM18 6.99996L16.59 5.57996L10.24 11.93L11.66 13.34L18 6.99996Z" />
+</svg>
+                                  </div>
                                 )}
                               </div>
                             </div>
@@ -615,15 +628,15 @@ export function WhatsAppTestAIPanel({
                       );
                     })}
                     {isThinking && (
-                      <div className="flex justify-start relative group">
-                        <div className="relative max-w-[85%] min-w-[70px] px-[9px] pt-[6px] pb-[8px] text-[14.2px] leading-[19px] shadow-[0_1px_0.5px_rgba(11,20,26,.13)] rounded-[0_8px_8px_8px] bg-white dark:bg-[#202c33] text-[#111b21] dark:text-[#e9edef] mt-[6px]">
-                          <svg viewBox="0 0 8 13" width="8" height="13" className="absolute top-0 left-[-8px] text-white dark:text-[#202c33]">
+                      <div className="flex justify-start">
+                        <div className="relative w-auto min-w-0 px-3 py-1.5 text-xs leading-tight shadow-[0_1px_0.5px_rgba(11,20,26,.13)] rounded-[0_8px_8px_8px] bg-white dark:bg-[#202c33] mt-[6px]">
+                          <svg viewBox="0 0 8 13" width="6.5" height="11" className="absolute top-0 left-[-6.5px] text-white dark:text-[#202c33]">
                             <path fill="currentColor" d="M1.533 2.568L8 11.193V0H2.812C1.042 0 .474 1.156 1.533 2.568z"/>
                           </svg>
-                          <div className="flex gap-1.5 py-1 px-1">
-                            <motion.div animate={{ scale: [1, 1.3, 1] }} transition={{ repeat: Infinity, duration: 0.8, delay: 0 }} className="w-1.5 h-1.5 rounded-full bg-gray-400" />
-                            <motion.div animate={{ scale: [1, 1.3, 1] }} transition={{ repeat: Infinity, duration: 0.8, delay: 0.2 }} className="w-1.5 h-1.5 rounded-full bg-gray-400" />
-                            <motion.div animate={{ scale: [1, 1.3, 1] }} transition={{ repeat: Infinity, duration: 0.8, delay: 0.4 }} className="w-1.5 h-1.5 rounded-full bg-gray-400" />
+                          <div className="flex items-center gap-0.5 py-0.5 px-0.5">
+                            <motion.div animate={{ scale: [1, 1.1, 1] }} transition={{ repeat: Infinity, duration: 1.2, delay: 0 }} className="w-1.25 h-1.25 rounded-full bg-gray-400" />
+                            <motion.div animate={{ scale: [1, 1.1, 1] }} transition={{ repeat: Infinity, duration: 1.2, delay: 0.2 }} className="w-1.25 h-1.25 rounded-full bg-gray-400" />
+                            <motion.div animate={{ scale: [1, 1.1, 1] }} transition={{ repeat: Infinity, duration: 1.2, delay: 0.4 }} className="w-1.25 h-1.25 rounded-full bg-gray-400" />
                           </div>
                         </div>
                       </div>
@@ -637,11 +650,31 @@ export function WhatsAppTestAIPanel({
             {/* Input area & Floating quick replies */}
             <div className="flex flex-col flex-shrink-0 relative z-20">
               {messages.length === 0 && (
-                <div className="flex gap-2 overflow-x-auto px-4 pb-2 pt-1 no-scrollbar" style={{ scrollbarWidth: 'none' }}>
+                <div 
+                  className={`flex gap-2 overflow-x-auto px-4 pb-2 pt-1 scrollbar-hide snap-x snap-mandatory ${panelSize.width > 500 ? 'justify-center' : 'justify-start'}`}
+                  style={{ 
+                    scrollbarWidth: 'none', 
+                    msOverflowStyle: 'none',
+                    scrollSnapType: 'x mandatory',
+                    WebkitOverflowScrolling: 'touch'
+                  }}
+                  onWheel={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    const container = e.currentTarget as HTMLElement;
+                    const scrollLeft = container.scrollLeft + (e.deltaX || -e.deltaY || 0);
+                    container.scrollTo({ left: scrollLeft, behavior: 'smooth' });
+                  }}
+                >
+                  <style jsx>{`
+                    div::-webkit-scrollbar { display: none; }
+                    div::-webkit-scrollbar-track { display: none; }
+                  `}</style>
                   {['"What are your hours?"', '"How do I book?"', '"Show me services"'].map((q, i) => (
-                    <button key={i}
+                    <button 
+                      key={i}
                       onClick={() => setInputValue(q.replace(/"/g, ''))}
-                      className="px-3 py-1.5 text-[13px] rounded-full transition-all cursor-pointer shadow-sm border whitespace-nowrap"
+                      className="px-3 py-1.5 text-[13px] rounded-full transition-all cursor-pointer shadow-sm border whitespace-nowrap flex-shrink-0 snap-center"
                       style={{
                         background: isDarkMode ? '#202c33' : '#ffffff',
                         color: isDarkMode ? '#e9edef' : '#111b21',
